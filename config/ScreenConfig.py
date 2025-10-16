@@ -1,7 +1,7 @@
 import pygame
 
 class ScreenConfig:
-    
+
     def __init__(self):
         pass
 
@@ -16,8 +16,7 @@ class ScreenConfig:
         return self.color_base
     
     def set_caption(self, caption):
-        self.caption = pygame.display.set_caption(caption)
-        return self.caption
+        pygame.display.set_caption(caption)
     
     def init_screen(self, width, height):
         return pygame.display.set_mode(self.set_dimension(width, height))
