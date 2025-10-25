@@ -5,7 +5,10 @@ class Screen:
         pass
 
     def setup(self, dimension, color, name):
-        pass
+        screen = pygame.display.set_mode(dimension)
+        pygame.display.set_caption(str(name))
+        screen.fill(pygame.Color(100, 200, 250))
+        return screen
 
     def draw_surface(self, surface:pygame.Surface):
         pass
