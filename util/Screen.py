@@ -3,17 +3,16 @@ import pygame
 class Screen:
     def __init__(self):
         self.screen = None
-        pass
 
-    def setup(self, dimension, color:pygame.Color, name):
-        self.screen = pygame.display.set_mode(dimension)
+    def setup(self, color:pygame.Color, name):
+        self.screen = pygame.display.set_mode((1200, 800))
         pygame.display.set_caption(str(name))
         self.screen.fill(color)
         pygame.display.flip()
         return self.screen
 
     def draw_rect(self, rect:pygame.Rect):
-        pygame.display.update(rect)
+        pass
 
     def draw_group(self, group:pygame.sprite.Group):
         pass
