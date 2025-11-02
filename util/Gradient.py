@@ -1,6 +1,5 @@
 import pygame
 
-
 class Gradient:
     def __init__(self, gradient: dict, dimension: tuple):
         self.__gradient = gradient
