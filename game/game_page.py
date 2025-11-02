@@ -2,7 +2,7 @@ import pygame
 from config.ScreenConfig import ScreenConfig
 from config.FontConfig import FontConfig
 from config.ColorConfig import ColorConfig
-from config.Screen import Screen
+from config.screen import Screen
 
 
 class Game(Screen):

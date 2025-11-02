@@ -2,7 +2,7 @@ import pygame
 from home.home_page_test import Home
 from game.game_page import Game
 from config.ScreenAttribute import ScreenAttribute
-from config.Screen import Screen
+from config.screen import Screen
 
 
 class Start:

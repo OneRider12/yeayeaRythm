@@ -33,7 +33,7 @@ class BoxConfig:
             box = self.create_box((x / total, y), color)
             self.box = box.get_rect(topleft=(x_curr, dimension[1]))
             x_curr += dimension[0] / total + gap
-            hlist.add(box)
+            # hlist.add(box)
 
         return hlist
             
