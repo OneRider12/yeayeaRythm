@@ -1,51 +1,60 @@
 import pygame
-from pygame import Surface
 
+from config.FontConfig import FontConfig
 from util.Gradient import Gradient
 
-class Text:
-    def __init__(self, text, color, screen:pygame.Surface, position):
+class Text(pygame.sprite.Sprite):
+    def __init__(self, text: str, size: int, color, screen: pygame.Surface, position):
+        super().__init__()
         self.text = text
         self.color = color
         self.screen = screen
         self.position = position
 
-        font_path = "assets/fonts/PixelifySans-VariableFont_wght.ttf"
-        try:
-            self.font = pygame.font.Font(font_path, 48)
-        except pygame.error:
-            print(f'Error: Could not load font from {font_path}')
-            pygame.quit()
-            exit()
+        self.image = None
+        self.rect = None
 
-        '''
-        # Gradient ({stop1 : (r1,g1,b1)}, {stop2 : (r2,g2,b2)}, {stop3 : (r3,g3,b3)}) (max and only 3 stops)
-        # Example:
-        self.gradient = {
-            0.23 : (191, 191, 191),
-            0.56 : (255, 254, 224),
-            1.0 : (255, 255, 241)
-        }
-        '''
+        self.text_surface = None
+        self.text_dimension = None
+
+        self.font = FontConfig(size)
 
         self.create_text_surface()
 
+    def update_text(self, text):
+        text = str(text)
+        if self.text != text:
+            self.text = text
+            self.create_text_surface()
 
-    def __check_gradient(self, dimension:tuple, text_surface:pygame.Surface):
-        if isinstance(dict, self.color):
-            gradient_surface = Gradient(self.color, dimension)
-            text_surface.blit(gradient_surface, (0, 0), special_flags=pygame.BLEND_MULT)
-            return None
+    def __check_color(self, dimension):
+        if isinstance(self.color, dict):
+            text_gradient_surface = Gradient(self.color, dimension) # Dict to Gradient
+            self.text_surface.blit(text_gradient_surface, (0, 0), special_flags=pygame.BLEND_MULT)
         else:
-            return text_surface
-
-    def create_text_surface(self): # Not surely checking
-        text_surface = self.font.render(self.text, True, pygame.Color(255, 255, 255))
-        text_dimension = text_surface.get_size()
-        try:
-            if isinstance(self.__check_gradient(text_dimension, text_surface), pygame.Surface):
-                self.screen.blit(text_surface, self.position)
+            if isinstance(self.color, tuple):
+                color = pygame.Color(*self.color)  # Tuple to Color
             else:
-                return
-        except pygame.error:
-            print(f'ERROR : Blit Text')
+                color = self.color  # Already Color
+
+            text_color_surface = pygame.Surface(dimension)
+            text_color_surface.fill(color)
+
+            self.text_surface.blit(text_color_surface, (0, 0), special_flags=pygame.BLEND_MULT)
+
+
+    def create_text_surface(self, alignment="center"):
+        white = pygame.Color(255, 255, 255)
+        self.text_surface = self.font.font.render(self.text, True, white)
+        self.text_dimension = self.text_surface.get_size()
+
+        self.image = self.text_surface
+        if alignment == "topleft":
+            self.rect = self.image.get_rect(topleft=self.position)
+        elif alignment == "center":
+            self.rect = self.image.get_rect(center=self.position)
+
+        self.__check_color(self.text_dimension)
+
+
+

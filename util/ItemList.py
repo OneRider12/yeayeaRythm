@@ -8,7 +8,7 @@ class ItemList(Box):
 
     # Return Sprite (box)
     def __create_box(self, dimension, text: str = None):
-        box = Box(self.dimension, self.color, self.text)
+        box = Box(self.dimension, self.color, text)
         return box.rect
 
     def list_h(self, dimension:tuple, position:tuple, amount:int):
