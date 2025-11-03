@@ -1,0 +1,6 @@
+{
+  "name": "SONG1",
+  "artist": "IDK just me bro.",
+  "bpm": 120,
+  "notes_sheet_dir": "assets/song_data/song01_notes_sheet.txt"
+}

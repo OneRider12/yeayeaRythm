@@ -1,29 +1,29 @@
 import pygame
 
-from config.BoxConstant import BASE_SPEED
+from config.BoxConstant import BASE_SPEED, __ADJUSTMENT_EDGE_LINE, ADJUSTMENT_MULTI
 from config.PageConstant import SCREEN_WIDTH, SCREEN_HEIGHT
 from util.Gradient import Gradient
-from util.Text import Text
 
 
 class Box(pygame.sprite.Sprite):
-    def __init__(self, dimension, color, position: tuple, text: pygame.sprite.Sprite = None):
+    def __init__(self, dimension, color, position: tuple, size_adj: tuple = (0, 0)):
         super().__init__()
         self.dimension = dimension
         self.color = color
-        self.text = text
 
         self.image = None
         self.rect = None
         self.box = None
 
-        self.__check_isTexting()
+        # self.__check_isTexting()
         self.__check_color()
 
         self.create_box(position)
 
         self.move_speed = BASE_SPEED
         self.vector = (0, 0)
+
+        self.size_adj = size_adj
 
     def update(self):
         self.__update_pos()
@@ -33,20 +33,33 @@ class Box(pygame.sprite.Sprite):
         self.rect.x += BASE_SPEED * self.vector[0]
         self.rect.y += BASE_SPEED * self.vector[1]
 
-        if self.rect.bottom > SCREEN_HEIGHT:
+        if self.rect.top > SCREEN_HEIGHT:
             self.kill()
+            print("log: box was killed")
 
     def __update_size(self):
-        multiplier = 1
+        # print("__update_size CALLED !!")
+
+        # new_w, new_h = int(self.size_adj[0]), int(self.size_adj[1])
         w, h = self.dimension
-        self.dimension = (w * multiplier, h * multiplier)
+        dw, dh = self.size_adj
+
+        new_w = int(w + dw)
+        new_h = int(h + dh)
+
+        self.dimension = (new_w, new_h)
+
+        # print((w, h), (dw, dh))
+
+        position = self.rect.center
+        self.image = pygame.Surface(self.dimension)
+        self.image.fill(self.color)
+        self.rect = self.image.get_rect(center=position)
+
+        # print(new_w, new_h)
 
     def set_vector(self, direction):
         self.vector = direction
-
-    # Check State
-    def __check_isTexting(self):
-        self.isTexting = isinstance(self.text, str)
 
     def __check_color(self):
         if isinstance(self.color, dict):
@@ -60,19 +73,6 @@ class Box(pygame.sprite.Sprite):
     def create_box(self, position: tuple):
         self.image = pygame.Surface(self.dimension)
         self.image.fill(self.color)
-        self.rect = self.image.get_rect(topleft=position) # (width/2, 200)
-        # self.box = Box(self.dimension, self.color, self.text)
-
-        # if self.isTexting:
-        #     pass
-
-        # self.create_center_text(position)
+        self.rect = self.image.get_rect(center=position)
 
         return self.box
-
-    # Add centered Text in Box
-    # def create_center_text(self, position):
-    #     if self.text is None:
-    #         pass
-    #     else:
-    #         self.text.rect = self.image.get_rect(center=position)

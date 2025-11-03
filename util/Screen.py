@@ -1,5 +1,4 @@
 import pygame
-from prompt_toolkit.output.win32 import BACKGROUND_COLOR
 
 from config.PageConstant import SCREEN_DIMENSION, SCREEN_BACKGROUND
 

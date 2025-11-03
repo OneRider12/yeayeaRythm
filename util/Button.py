@@ -14,7 +14,7 @@ class Button(Box):
         self.rect = None
         self.box = None
 
-        self.__check_isTexting()
+        # self.__check_isTexting()
         self.__check_color()
 
         self.create_box(position)
