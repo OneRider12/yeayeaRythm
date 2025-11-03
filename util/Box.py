@@ -60,7 +60,7 @@ class Box(pygame.sprite.Sprite):
     def create_box(self, position: tuple):
         self.image = pygame.Surface(self.dimension)
         self.image.fill(self.color)
-        self.rect = self.image.get_rect(center=position)
+        self.rect = self.image.get_rect(topleft=position) # (width/2, 200)
         # self.box = Box(self.dimension, self.color, self.text)
 
         # if self.isTexting:
