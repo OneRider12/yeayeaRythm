@@ -1,7 +1,8 @@
 import pygame
 
 from config.song_dir import SONG01_JSON_DIR
-from game.GamePage import GamePage
+# from game.GamePage import GamePage
+from game.GamePage2 import GamePage
 from home.HomePage import HomePage
 from credits.CreditsPage import CreditsPage
 
