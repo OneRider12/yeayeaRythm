@@ -3,7 +3,7 @@ import start.Start
 import setting.Setting
 
 pygame.init()
-WIDTH, HEIGHT = 1324, 768
+WIDTH, HEIGHT = 1200, 800
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("YeaYea RHYTHM")
 

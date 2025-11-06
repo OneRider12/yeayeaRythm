@@ -1,7 +1,7 @@
 import pygame, sys
 
 def run(screen, dt):
-    WIDTH, HEIGHT = 1324, 768
+    WIDTH, HEIGHT = 1200, 800
     FONT_PATH = "assets/fonts/PixelifySans-VariableFont_wght.ttf"
 
     if not hasattr(run, "_inited"):
@@ -11,7 +11,7 @@ def run(screen, dt):
         try:
             run.FONT_TITLE = pygame.font.Font(FONT_PATH, 92)
             run.FONT_LABEL = pygame.font.Font(FONT_PATH, 34)
-            run.FONT_BTN   = pygame.font.Font(FONT_PATH, 54)
+            run.FONT_BTN   = pygame.font.Font(FONT_PATH, 44)
         except:
             run.FONT_TITLE = pygame.font.SysFont("Consolas", 92, bold=True)
             run.FONT_LABEL = pygame.font.SysFont("Consolas", 34)
@@ -128,12 +128,10 @@ def run(screen, dt):
         # create once
         run.rows = [
             SettingRow("MV Background", y=250, switch_default=True),
-            SettingRow("VFX",           y=340, switch_default=True),
+            SettingRow("Sound",           y=340, switch_default=True),
         ]
         run.buttons = [
-            Button("SONG", (WIDTH//2, 500)),
-            Button("PLAY", (WIDTH//2, 600)),
-            Button("HOME", (WIDTH//2, 700)),
+            Button("BACK", (WIDTH//2, 550)),
         ]
 
     # เชื่อมไปหน้าต่างๆ
@@ -144,7 +142,7 @@ def run(screen, dt):
             row.handle_event(event)
         for b in run.buttons:
             if b.was_clicked(event):
-                if b.text == "HOME":
+                if b.text == "BACK":
                     return "start"
                 # เพิ่มหน้าในปุ่มอื่นๆ
 
