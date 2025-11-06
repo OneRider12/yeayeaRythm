@@ -20,12 +20,12 @@ class CreditsPage(Screen):
         self.isRunning = True
 
         # --- โหลด GIF พื้นหลัง ---
-        self.frames = self.load_gif_frames("assets/gif/8904fb777b93efc7bd4b8aa22482672a.gif")
-        self.frame_cycle = cycle(self.frames)
+        # self.frames = self.load_gif_frames("assets/gif/8904fb777b93efc7bd4b8aa22482672a.gif")
+        # self.frame_cycle = cycle(self.frames)
 
         # --- ฟอนต์ ---
         self.title_font = pygame.font.Font(FONT_PATH, 100)
-        self.text_font = pygame.font.Font(FONT_PATH, 45)
+        self.text_font = pygame.font.Font(FONT_PATH, 35)
         self.button_font = pygame.font.Font(FONT_PATH, 55)
 
         # --- กล่องและปุ่ม ---
@@ -39,22 +39,22 @@ class CreditsPage(Screen):
         ]
 
     # GIF เป็น list ของภาพ
-    def load_gif_frames(self, filename):
-        gif_dir = "assets/gif/8904fb777b93efc7bd4b8aa22482672a.gif"
-        gif_surface = pygame.image.load(gif_dir)
-        im = Image.open(filename)
-        frames = []
-        try:
-            while True:
-                frame = im.convert('RGBA')
-                pygame_img = pygame.image.fromstring(frame.tobytes(), frame.size, frame.mode)
-                pygame_img = pygame.transform.scale(pygame_img, (1200, 800))
-                pygame_img.set_alpha(77)  # ความจาง 30% (255 * 0.3 ≈ 77)
-                frames.append(pygame_img)
-                im.seek(im.tell() + 1)
-        except EOFError:
-            pass
-        return frames
+    # def load_gif_frames(self, filename):
+    #     gif_dir = "assets/gif/8904fb777b93efc7bd4b8aa22482672a.gif"
+    #     gif_surface = pygame.image.load(gif_dir)
+    #     im = Image.open(filename)
+    #     frames = []
+    #     try:
+    #         while True:
+    #             frame = im.convert('RGBA')
+    #             pygame_img = pygame.image.fromstring(frame.tobytes(), frame.size, frame.mode)
+    #             pygame_img = pygame.transform.scale(pygame_img, (1200, 800))
+    #             pygame_img.set_alpha(77)  # ความจาง 30% (255 * 0.3 ≈ 77)
+    #             frames.append(pygame_img)
+    #             im.seek(im.tell() + 1)
+    #     except EOFError:
+    #         pass
+    #     return frames
 
     def draw(self):
         self.bg_color = SCREEN_BACKGROUND
@@ -64,26 +64,36 @@ class CreditsPage(Screen):
 
         # หัวข้อ
         title = self.title_font.render("CREDIT", True, (255, 255, 255))
-        self.screen.blit(title, (600 - title.get_width() // 2, 80))
+        self.screen.blit(title, (600 - title.get_width() // 2, 50))
 
         # กล่องสีเทา
-        pygame.draw.rect(self.screen, (200, 200, 200), self.credit_box)
+        pygame.draw.rect(self.screen, (200, 200, 200), self.credit_box.move(0, -35))
 
 
         # รายชื่อ
-        y = 550
+        y = 510
         for line in self.credits:
             txt = self.text_font.render(line, True, (255, 255, 255))
             self.screen.blit(txt, (600 - txt.get_width() // 2, y))
             y += 50
 
         # ปุ่ม HOME
-        pygame.draw.ellipse(self.screen, (240, 240, 240), self.button_rect)
+        #pygame.draw.ellipse(self.screen, (240, 240, 240), self.button_rect)
+        #btn_text = self.button_font.render("HOME", True, (25, 25, 60))
+        #self.screen.blit(
+           # btn_text,
+            #(self.button_rect.centerx - btn_text.get_width() // 2,
+             #self.button_rect.centery - btn_text.get_height() // 2)
+        #)
+        offset_y = 40  # จำนวนพิกเซลที่อยากขยับลง
+        moved_rect = self.button_rect.move(0, offset_y)
+
+        pygame.draw.ellipse(self.screen, (240, 240, 240), moved_rect)
         btn_text = self.button_font.render("HOME", True, (25, 25, 60))
         self.screen.blit(
-            btn_text,
-            (self.button_rect.centerx - btn_text.get_width() // 2,
-             self.button_rect.centery - btn_text.get_height() // 2)
+          btn_text,
+          (moved_rect.centerx - btn_text.get_width() // 2,
+          moved_rect.centery - btn_text.get_height() // 2)
         )
 
     def run(self):
