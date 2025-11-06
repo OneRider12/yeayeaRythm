@@ -2,7 +2,7 @@ import pygame, sys
 
 def run(screen, dt):
     WIDTH, HEIGHT = 1324, 768
-    FONT_PATH = "PixelifySans-VariableFont_wght.ttf"
+    FONT_PATH = "assets/fonts/PixelifySans-VariableFont_wght.ttf"
 
     if not hasattr(run, "_inited"):
         run._inited = True
