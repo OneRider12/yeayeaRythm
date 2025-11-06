@@ -2,7 +2,7 @@ import pygame, sys, random
 
 def run(screen, dt):
     WIDTH, HEIGHT = 1324, 768
-    FONT_PATH = "PixelifySans-VariableFont_wght.ttf"
+    FONT_PATH = "assets/fonts/PixelifySans-VariableFont_wght.ttf"
 
     #font
     def load_fonts():

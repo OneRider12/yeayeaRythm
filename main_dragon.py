@@ -1,6 +1,6 @@
 import pygame, sys
-import Start
-import Setting
+import start.Start
+import setting.Setting
 
 pygame.init()
 WIDTH, HEIGHT = 1324, 768
@@ -14,13 +14,16 @@ current_scene = "start"   # เริ่มต้นที่หน้า start
 while True:
     dt = clock.tick(60) / 1000.0
 
+    startss = start.Start
+    settingss = setting.Setting
+
     if current_scene == "start":
-        next_scene = Start.run(screen, dt)
+        next_scene = startss.run(screen, dt)
         if next_scene:
             current_scene = next_scene
 
     elif current_scene == "setting":
-        next_scene = Setting.run(screen, dt)
+        next_scene = settingss.run(screen, dt)
         if next_scene:
             current_scene = next_scene
 
