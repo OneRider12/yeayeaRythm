@@ -2,6 +2,6 @@
   "name": "SONG2",
   "artist": "IDK just me bro.",
   "bpm": 120,
-  "difficulty": 4,
+  "difficulty": 2,
   "notes_sheet_dir": "assets/song_data/song02_notes_sheet.txt"
 }

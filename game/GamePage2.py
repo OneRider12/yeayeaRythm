@@ -56,6 +56,9 @@ class GamePage(Screen, EngineConfig):
         self.tick_per_beat = self.bpm * 2
         self.tick_counter = 0
         self.tempo_counter = 0
+        self.tick_delay_end_counter = 0
+
+        self.difficulty = self.song_data.get("difficulty")
 
         # Static Group
         self.ui = pygame.sprite.LayeredUpdates()  # Lower numbers are drawn first (background)
@@ -116,17 +119,16 @@ class GamePage(Screen, EngineConfig):
         self.checker_boxes_list = [self.checker_lane1_box, self.checker_lane2_box, self.checker_lane3_box, self.checker_lane4_box]
         self.checker_boxes.add(self.checker_lane1_box, self.checker_lane2_box, self.checker_lane3_box, self.checker_lane4_box)
 
-        self.checker_miss_zone = Box((600, 40), (255,255,255, 2), (GAME_WIDTH_CENTER, CHECKER_DISTANCE - 50)),
-        self.checker_badd_zone = Box((600, 20), (111,44,222, 2), (GAME_WIDTH_CENTER, CHECKER_DISTANCE - 30)),
-        self.checker_good_zone = Box((600, 20), (11,255,55, 2),  (GAME_WIDTH_CENTER, CHECKER_DISTANCE - 10)),
-        self.checker_perf_zone = Box((600, 20), (44,55,255, 2),  (GAME_WIDTH_CENTER, CHECKER_DISTANCE + 10)),
-        self.checker_zone = {
-            self.checker_perf_zone,
-            self.checker_good_zone,
-            self.checker_miss_zone,
-            self.checker_badd_zone,
-        }
-
+        # self.checker_miss_zone = Box((600, 40), (255,255,255, 2), (GAME_WIDTH_CENTER, CHECKER_DISTANCE - 50)),
+        # self.checker_badd_zone = Box((600, 20), (111,44,222, 2), (GAME_WIDTH_CENTER, CHECKER_DISTANCE - 30)),
+        # self.checker_good_zone = Box((600, 20), (11,255,55, 2),  (GAME_WIDTH_CENTER, CHECKER_DISTANCE - 10)),
+        # self.checker_perf_zone = Box((600, 20), (44,55,255, 2),  (GAME_WIDTH_CENTER, CHECKER_DISTANCE + 10)),
+        # self.checker_zone = {
+        #     self.checker_perf_zone,
+        #     self.checker_good_zone,
+        #     self.checker_miss_zone,
+        #     self.checker_badd_zone,
+        # }
 
         # Separate digit
         self.digit1 = Text('0', SCORE_SIZE, NORMAL_COLOR_LIGHT, self.screen,
@@ -167,12 +169,11 @@ class GamePage(Screen, EngineConfig):
 
     def __update_tempo(self):
         # Generate Tempo line and note
-        if self.tick_counter == self.tick_per_beat * NOTE_VECTOR_RES / 2:
+        if self.tick_counter == self.tick_per_beat / self.difficulty:
             if self.tempo_counter + 1 <= len(self.notes_sheets):
                 self.__generate_note(self.notes_sheets[self.tempo_counter])
             else:
                 self.isEnded = True
-                self.end_game()
                 print("log: song ended")
 
             print(f'=== {self.tempo_counter} ===')
@@ -315,12 +316,11 @@ class GamePage(Screen, EngineConfig):
         self.ui.add(self.end_popup, layer=501)
         self.ui.add(self.end_text, layer=502)
         self.ui.add(self.home_button, layer=503)
-        print("**PAUSE**")
+        print("**ENDED**")
 
         while self.isEnded:
 
-            if self.ending_tick_counter == 1000:
-                self.update_static()
+            self.update_static()
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -365,6 +365,12 @@ class GamePage(Screen, EngineConfig):
                     if box.rect.y > 700:
                         box.kill()  # Remove from Pygame groups
                         lane.pop(j)  # Remove from the Python list by index
+
+            # Ending game with 2 seconds delay
+            if self.isEnded:
+                self.tick_delay_end_counter += 1
+                if self.tick_delay_end_counter == self.tick_per_beat * 2:
+                    self.end_game()
 
             # Event checker
             for event in pygame.event.get():
