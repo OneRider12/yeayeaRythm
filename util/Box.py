@@ -31,6 +31,11 @@ class Box(pygame.sprite.Sprite):
         self.size_adj = (0, 0)
         self.ratio = ()
 
+        self.id = int()
+
+    def __str__(self):
+        return f'{self.id}'
+
     def update(self):
         self.__update_pos()
         self.__update_size()
@@ -46,7 +51,7 @@ class Box(pygame.sprite.Sprite):
 
         if self.rect.top > SCREEN_HEIGHT:
             self.kill()
-            print("log: box was killed")
+            # print("log: box was killed")
 
     # def __update_size(self):
     #     w, h = self.dimension
@@ -141,7 +146,6 @@ class Box(pygame.sprite.Sprite):
         else:
             return self.image.get_rect(center=position)
 
-
     # Create Box
     def create_box(self, position: tuple):
         self.image = pygame.Surface(self.dimension, pygame.SRCALPHA)
@@ -149,3 +153,13 @@ class Box(pygame.sprite.Sprite):
         self.rect = self.__check_rect(self.alignment, position)
 
         return self.box
+
+    def isCollide(self, box_rect):
+        return pygame.Rect.colliderect(self.rect, box_rect)
+
+# class Rect(pygame.rect.Rect):
+#     def __init__(self, dimenion, position, alignment:str=""):
+#         super().__init__()
+
+
+

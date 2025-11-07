@@ -1,8 +1,7 @@
 import pygame
 import json
 
-from config.BoxConstant import NOTE_VECTOR_RES, BOX_TEMPO_COORD, BOX_TEMPO_SIZE, BOX_TEMPO_COLOR, \
-    BOX_CHECKER_CHECKPOINT_COORD
+from config.BoxConstant import NOTE_VECTOR_RES, BOX_TEMPO_COORD, BOX_TEMPO_SIZE, BOX_TEMPO_COLOR
 from config.FontConstant import *
 from config.PageConstant import *
 
@@ -18,6 +17,7 @@ BOX_CHECKER_COLOR = (63, 169, 245)
 CHECKER_SIZE = (180, 20)
 CHECKER_GAP = 20
 CHECKER_DISTANCE = 600
+CHECKER_ZONE_Y = [CHECKER_DISTANCE + 10, CHECKER_DISTANCE, CHECKER_DISTANCE - 8]
 
 LANE1_X = GAME_WIDTH_CENTER - CHECKER_GAP*3/2 - CHECKER_SIZE[0]*3/2
 LANE2_X = GAME_WIDTH_CENTER - CHECKER_GAP/2 - CHECKER_SIZE[0]/2
@@ -61,6 +61,7 @@ class GamePage(Screen, EngineConfig):
         self.ui = pygame.sprite.LayeredUpdates()  # Lower numbers are drawn first (background)
         self.score_ui = pygame.sprite.Group()
         self.checker_boxes = pygame.sprite.Group()
+        self.checker_zone = []
 
         # Dynamic Group
         self.temp_tempo_boxes = pygame.sprite.Group()
@@ -70,14 +71,21 @@ class GamePage(Screen, EngineConfig):
         # Scoring
         self.score = 0
         self.stack = 0
-        self.score_success = {0: 0, 20: 0.5, 50: 1, 70: 1.5}
+        self.score_success = {0: 0, 20: 1, 50: 1.5, 70: 2}
         self.score_multi_combo_value = {10: 1.3, 25: 2, 60: 3, 100: 5}
-        self.color_stack = {100: (124, 255, 1), 60: (255, 242, 5), 25: (168, 0, 170), 10: (255, 17, 120), 0: (255, 254, 224)}
+        self.color_stack = {0: (255, 254, 224), 10: (124, 255, 1), 25: (255, 242, 5), 60: (168, 0, 170), 100: (255, 17, 120)}
+
+        self.note_in_lane = [list(), list(), list(), list()]
 
         # Pausing game
         self.isPause = False
         self.waiting_tick_clock = pygame.time.Clock()
         self.waiting_tick_counter = 0
+
+        # Ending game
+        self.isEnded = False
+        self.ending_tick_clock = pygame.time.Clock()
+        self.ending_tick_counter = 0
 
         # Initialize all UI
         self.draft_all()
@@ -86,7 +94,7 @@ class GamePage(Screen, EngineConfig):
         # Header UI
         self.score_header_text = Text("SCORE", 60, NORMAL_COLOR_LIGHT, self.screen, (SCORE_WIDTH_CENTER, 60))
         # self.score_header_box = Box((180, 70), NORMAL_COLOR_LIGHT, (self.SCORE_WIDTH_CENTER, 60))
-        self.score_counter_text = Text(f'{self.score:06d}', SCORE_SIZE, GAME_SCORE_COUNTER, self.screen, (SCORE_WIDTH_CENTER, SCREEN_HEIGHT_CENTER))
+        # self.score_counter_text = Text(f'{self.score:06d}', SCORE_SIZE, GAME_SCORE_COUNTER, self.screen, (SCORE_WIDTH_CENTER, SCREEN_HEIGHT_CENTER))
         self.score_ui.add(self.score_header_text)
 
         # Note box
@@ -105,8 +113,20 @@ class GamePage(Screen, EngineConfig):
         self.checker_lane2_box = Box(CHECKER_SIZE, BOX_CHECKER_COLOR, (LANE2_X, CHECKER_DISTANCE))
         self.checker_lane3_box = Box(CHECKER_SIZE, BOX_CHECKER_COLOR, (LANE3_X, CHECKER_DISTANCE))
         self.checker_lane4_box = Box(CHECKER_SIZE, BOX_CHECKER_COLOR, (LANE4_X, CHECKER_DISTANCE))
-        self.checker_boxes.add(self.checker_lane1_box, self.checker_lane2_box, self.checker_lane3_box,
-                               self.checker_lane4_box)
+        self.checker_boxes_list = [self.checker_lane1_box, self.checker_lane2_box, self.checker_lane3_box, self.checker_lane4_box]
+        self.checker_boxes.add(self.checker_lane1_box, self.checker_lane2_box, self.checker_lane3_box, self.checker_lane4_box)
+
+        self.checker_miss_zone = Box((600, 40), (255,255,255, 2), (GAME_WIDTH_CENTER, CHECKER_DISTANCE - 50)),
+        self.checker_badd_zone = Box((600, 20), (111,44,222, 2), (GAME_WIDTH_CENTER, CHECKER_DISTANCE - 30)),
+        self.checker_good_zone = Box((600, 20), (11,255,55, 2),  (GAME_WIDTH_CENTER, CHECKER_DISTANCE - 10)),
+        self.checker_perf_zone = Box((600, 20), (44,55,255, 2),  (GAME_WIDTH_CENTER, CHECKER_DISTANCE + 10)),
+        self.checker_zone = {
+            self.checker_perf_zone,
+            self.checker_good_zone,
+            self.checker_miss_zone,
+            self.checker_badd_zone,
+        }
+
 
         # Separate digit
         self.digit1 = Text('0', SCORE_SIZE, NORMAL_COLOR_LIGHT, self.screen,
@@ -128,12 +148,14 @@ class GamePage(Screen, EngineConfig):
     # Lower numbers are drawn first (background)
     def update_static(self):
         self.ui.add(self.score_ui, layer=100)
+        self.ui.add(self.digit_group, layer=110)
+
         self.ui.add(self.checker_boxes, layer=20)
         self.ui.add(self.playfield_boxes, layer=150)
         self.ui.add(self.note_boxes, layer=10)
-        self.ui.add(self.digit_group, layer=400)
+        # self.ui.add(self.checker_boxes, layer=300)
 
-
+        # print(self.ui)
         # Update screen
         self.ui.draw(self.screen)
 
@@ -149,6 +171,8 @@ class GamePage(Screen, EngineConfig):
             if self.tempo_counter + 1 <= len(self.notes_sheets):
                 self.__generate_note(self.notes_sheets[self.tempo_counter])
             else:
+                self.isEnded = True
+                self.end_game()
                 print("log: song ended")
 
             print(f'=== {self.tempo_counter} ===')
@@ -166,66 +190,77 @@ class GamePage(Screen, EngineConfig):
         return notes
 
     def __generate_note(self, notes):
-        note_template = (
-            (BOX_NOTE_SIZE, BOX_NOTE_COLORS[0], BOX_NOTE1_COORD),
-            (BOX_NOTE_SIZE, BOX_NOTE_COLORS[1], BOX_NOTE2_COORD),
-            (BOX_NOTE_SIZE, BOX_NOTE_COLORS[2], BOX_NOTE3_COORD),
-            (BOX_NOTE_SIZE, BOX_NOTE_COLORS[3], BOX_NOTE4_COORD),
-        )
-
         note_group = pygame.sprite.Group()
+        lane = 0
 
         for n in range(4):
+            lane += 1
             if notes[n] == "*":
                 note = Box(*BOX_NOTE_DATA(n))
                 # print("log: create new note", n)
             else:
                 note = Box(*NOTE_BLANK)
             note.vector = (0, 1)
+            note.id = self.tempo_counter # Testing
             note_group.add(note)
+            self.note_in_lane[lane-1].append(note)
 
-        print(note_group)
+        # print(note_group)
         self.note_boxes.add(note_group)
 
     def __score_calc(self, successful):  # successful : 0% - 100%
         score_get = max([score for acc, score in self.score_success.items() if successful >= acc])
         if successful > 20:
             self.stack += 1
+
+            multi_list = [multi for combo, multi in self.score_multi_combo_value.items() if self.stack >= combo]
+            multi = max(multi_list) if len(multi_list) > 0 else 1
+            self.score += score_get * multi
+
+            int(self.score)
+            self.__update_score()
+
         else:
             self.stack = 0
 
-        multi_list = [multi for combo, multi in self.score_multi_combo_value.items() if self.stack >= combo]
-        multi = max(multi_list) if len(multi_list) > 0 else 1
-        self.score += score_get * multi
-        int(self.score)
-        self.__score_updater()
+        print(f'score: {self.score}')
 
-        print(score_get, multi, self.stack, self.score)
+    def __get_successful(self, rect1:pygame.Rect, rect2:pygame.Rect):
+        if not rect1.colliderect(rect2):
+            return 0
 
-    def __get_successful(self, leading_coord):
-        checkpoint = BOX_CHECKER_CHECKPOINT_COORD
-        successful = max(
-            [min(abs(success - leading_coord), abs(leading_coord - success)) / checkpoint[1] * 100 for success in
-             checkpoint])
-        return successful
+        intersection_rect = rect1.clip(rect2)
+        area_of_rect1 = rect1.width * rect1.height
+        intersection_area = intersection_rect.width * intersection_rect.height
+        percent = (intersection_area / area_of_rect1) * 100
 
-    def __score_updater(self):
-        # 6-Digits
+        print(f'percent: {percent}')
+        return percent
+
+    def __update_score(self):
+        # Coloring
+        color_max = max([k for k, v in self.color_stack.items() if self.stack >= k])
+        score_color = self.color_stack[color_max]
+
+        # Texting
         score_text = f'{int(self.score):06d}'
         for n in range(len(score_text)):
-            self.digits[n].text = score_text[n]
+            self.digits[n].update_text(score_text[n])
+            self.digits[n].update_color(score_color)
+        print(f'score_digits: -- {score_text} --')
 
-        # Coloring & Set value
-        score_color = self.color_stack[0]
-        for stack in self.color_stack:
+    def __get_checking_box(self, lane):
+        checking_box = None
+        lane_list = self.note_in_lane[lane - 1]  # Get the specific lane list
 
-            if stack >= self.stack:
-                score_color = self.color_stack[stack]
-                break
+        if lane_list:
+            # Original logic remains (now safe from IndexError)
+            if lane_list[0].rect.y > 400:
+                checking_box = lane_list[0]
 
-        self.score_counter_text.color = score_color
-        self.digit_group.update() ## ** ##
-
+                # CRITICAL: Use pop(0) for clean and efficient removal of the first element
+                lane_list.pop(0)
+        return checking_box
 
     # WIP; Add Button UI
     def pause_game(self):
@@ -268,6 +303,42 @@ class GamePage(Screen, EngineConfig):
 
             pygame.display.flip()
 
+    def end_game(self):
+
+        self.end_popup = Box((400, 300), (59, 49, 73), SCREEN_CENTER)
+        self.end_text = Text("ENDED", 60, (253, 252, 228), self.screen,
+                               (SCREEN_WIDTH_CENTER, SCREEN_HEIGHT_CENTER - 80))
+        self.home_button = Text("HOME", 52, (253, 252, 228), self.screen,
+                                (SCREEN_WIDTH_CENTER, SCREEN_HEIGHT_CENTER + 50))
+        ending_group = pygame.sprite.Group()
+        ending_group.add(self.end_popup, self.end_text, self.home_button)
+        self.ui.add(self.end_popup, layer=501)
+        self.ui.add(self.end_text, layer=502)
+        self.ui.add(self.home_button, layer=503)
+        print("**PAUSE**")
+
+        while self.isEnded:
+
+            if self.ending_tick_counter == 1000:
+                self.update_static()
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.isEnded = False
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        self.end_popup.kill()
+                        self.end_text.kill()
+                        self.home_button.kill()
+
+                        self.isEnded = False
+
+            self.ending_tick_clock.tick(100)
+            self.ending_tick_counter += 1
+
+            pygame.display.flip()
+            self.isRunning = False
+
     def run(self):
         while self.isRunning:
             # Reset screen
@@ -284,6 +355,17 @@ class GamePage(Screen, EngineConfig):
             pygame.draw.line(self.screen, (27, 48, 91), (GAME_WIDTH_CENTER + 440, 0),
                              (GAME_WIDTH_CENTER + 440, SCREEN_HEIGHT), 12)
 
+            # Kill outbound notes
+            for lane in self.note_in_lane:
+                # Iterate backwards using indices
+                for j in range(len(lane) - 1, -1, -1):
+                    box = lane[j]
+
+                    # Check if the box is below the screen height
+                    if box.rect.y > 700:
+                        box.kill()  # Remove from Pygame groups
+                        lane.pop(j)  # Remove from the Python list by index
+
             # Event checker
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -297,19 +379,38 @@ class GamePage(Screen, EngineConfig):
                             self.pause_game()
 
                     # Still not check
+                    # Single note
                     if event.key == pygame.K_d:
-                        self.__score_calc(self.__get_successful(self.note_lane1_box.rect.bottom)) # something.rect.bottom or something
+                        lane = 1
+                        checking_box = self.__get_checking_box(lane)
+                        if checking_box is not None:
+                            print(checking_box)
+                            self.__score_calc(self.__get_successful(self.checker_boxes_list[lane-1].rect, checking_box.rect))
+                            checking_box.kill()
                         print("log: pressed d", self.note_lane1_box.rect.bottom)
                     if event.key == pygame.K_f:
-                        self.__score_calc(self.__get_successful(self.note_lane2_box.rect.bottom))
+                        lane = 2
+                        checking_box = self.__get_checking_box(lane)
+                        if checking_box is not None:
+                            self.__score_calc(self.__get_successful(self.checker_boxes_list[lane-1].rect, checking_box.rect))
+                            checking_box.kill()
                         print("log: pressed f", self.note_lane1_box.rect.bottom)
                     if event.key == pygame.K_j:
-                        self.__score_calc(self.__get_successful(self.note_lane3_box.rect.bottom))
+                        lane = 3
+                        checking_box = self.__get_checking_box(lane)
+                        if checking_box is not None:
+                            self.__score_calc(self.__get_successful(self.checker_boxes_list[lane-1].rect, checking_box.rect))
+                            checking_box.kill()
                         print("log: pressed j", self.note_lane1_box.rect.bottom)
                     if event.key == pygame.K_k:
-                        self.__score_calc(self.__get_successful(self.note_lane4_box.rect.bottom))
+                        lane = 4
+                        checking_box = self.__get_checking_box(lane)
+                        if checking_box is not None:
+                            self.__score_calc(self.__get_successful(self.checker_boxes_list[lane-1].rect, checking_box.rect))
+                            checking_box.kill()
                         print("log: pressed k", self.note_lane1_box.rect.bottom)
 
+
             # self.score_counter_text.update_text(int(self.score))
-            self.clock.tick(self.tick_per_beat * NOTE_VECTOR_RES)
+            self.clock.tick(self.tick_per_beat)
             pygame.display.flip()
