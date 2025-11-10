@@ -21,11 +21,19 @@ class Text(pygame.sprite.Sprite):
 
         self.create_text_surface()
 
+    def __render_text(self):
+        center = self.rect.center
+        self.image = self.font.font.render(self.text, True, self.color)
+        self.rect = self.image.get_rect(center=center)
+
     def update_text(self, text):
-        text = str(text)
-        if self.text != text:
-            self.text = text
-            self.create_text_surface()
+        str(text)
+        self.text = text
+        self.__render_text()
+
+    def update_color(self, color):
+        self.color = color
+        self.__render_text()
 
     def __check_color(self, dimension):
         if isinstance(self.color, dict):
@@ -42,7 +50,6 @@ class Text(pygame.sprite.Sprite):
 
             self.text_surface.blit(text_color_surface, (0, 0), special_flags=pygame.BLEND_MULT)
 
-
     def create_text_surface(self, alignment="center"):
         white = pygame.Color(255, 255, 255)
         self.text_surface = self.font.font.render(self.text, True, white)
@@ -55,6 +62,4 @@ class Text(pygame.sprite.Sprite):
             self.rect = self.image.get_rect(center=self.position)
 
         self.__check_color(self.text_dimension)
-
-
 
