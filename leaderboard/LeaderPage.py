@@ -3,7 +3,6 @@ from util.Screen import Screen
 from config.FontConstant import FONT_PATH
 from config.PageConstant import SCREEN_BACKGROUND
 
-
 class LeaderPage(Screen):
     def __init__(self):
         super().__init__()
@@ -28,7 +27,7 @@ class LeaderPage(Screen):
         self.button_color = (240, 240, 240)
         self.button_shadow = (80, 90, 130)
 
-        # พื้นที่ฝั่งขวา (ใช้ดีไซน์เดียวกับหน้า CreditsPage)
+        # พื้นที่ฝั่งขวา 
         self.panel_x = 350
 
         # ปุ่ม
