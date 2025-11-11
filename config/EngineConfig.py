@@ -8,6 +8,9 @@ class EngineConfig:
         self.isRunning = True
         self.catch_event = None
 
+        self.music_volume = 0.8
+
+
     def _load(self, filename):
         try:
             # Use 'with open' to open the file for reading ('r')
@@ -16,6 +19,7 @@ class EngineConfig:
                 # The json.load() function reads the file content,
                 # parses the JSON structure, and returns a Python dictionary/list.
                 data = json.load(file)
+                pygame.mixer.music.load(data.get("song_dir"))
 
                 return data
 
@@ -25,6 +29,16 @@ class EngineConfig:
         except json.JSONDecodeError:
             print(f"Error: The file '{filename}' contains invalid JSON syntax.")
             return None
+
+    def play_song(self):
+        pygame.mixer.music.set_volume(self.music_volume)
+        pygame.mixer.music.play()
+
+    def pause_song(self):
+        pygame.mixer.music.pause()
+
+    def unpause_song(self):
+        pygame.mixer.music.unpause()
 
     def page_run(self):
         while self.isRunning:
