@@ -114,3 +114,8 @@ class CreditsPage(Screen):
 
         pygame.quit()
 
+#เชื่อมกับ main
+def run(screen, dt):
+    page = CreditsPage()   # สร้างหน้าเครดิต
+    page.run()             # ให้มันรัน loop ของมันเอง
+    return "start"         # กลับไปหน้า start หลังจากปิดเครดิต
