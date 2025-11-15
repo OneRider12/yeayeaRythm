@@ -8,3 +8,9 @@ SONG02_NOTE_DIR = SONG_DATA_DIR + "/song02_notes_sheet.txt"
 
 SONG03_JSON_DIR = SONG_DATA_DIR + "/song03.json"
 SONG03_NOTE_DIR = SONG_DATA_DIR + "/song03_notes_sheet.txt"
+
+SONG04_JSON_DIR = SONG_DATA_DIR + "/song04.json"
+SONG04_NOTE_DIR = SONG_DATA_DIR + "/song04_notes_sheet.txt"
+
+SONG05_JSON_DIR = SONG_DATA_DIR + "/song05.json"
+SONG05_NOTE_DIR = SONG_DATA_DIR + "/song05_notes_sheet.txt"

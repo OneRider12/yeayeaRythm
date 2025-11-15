@@ -31,7 +31,9 @@ class Box(pygame.sprite.Sprite):
         self.size_adj = (0, 0)
         self.ratio = ()
 
+        # etc.
         self.id = int()
+        self.isLongNote = False
 
     def __str__(self):
         return f'{self.id}'
