@@ -5,6 +5,9 @@ from start.Start import run as start
 from setting.Setting import run as setting
 from song.song_select import run as song_select
 from credits.CreditsPage import run as credit
+from game.GamePage2 import run as gameplay
+
+from config.song_dir import *
 
 WIDTH, HEIGHT = 1200, 800
 
@@ -16,10 +19,17 @@ def main():
     clock = pygame.time.Clock()
     current_scene = "start"   # เริ่มที่หน้า start
 
+    song_dir = (SONG01_JSON_DIR,
+                SONG02_JSON_DIR,
+                SONG03_JSON_DIR,
+                SONG04_JSON_DIR,
+                SONG05_JSON_DIR)
+
     
     while True:
         dt = clock.tick(60) / 1000.0  # แปลงเป็นวินาที (ไว้ใช้ใน animation)
 
+        # print(current_scene)
         # เลือก scene ตาม state ปัจจุบัน
         if current_scene == "start":
             next_scene = start(screen, dt)
@@ -31,9 +41,12 @@ def main():
             next_scene = song_select(screen, dt)
 
         elif current_scene == "credit":
-            next_scene = credit(screen, dt)
+            next_scene = credit()
 
-        # ถ้าอยากเพิ่มหน้าอื่นในอนาคต (play, leaderboard, credit) ก็เพิ่ม elif ตรงนี้ได้เลย
+        elif "song0" in current_scene:
+            song_json = song_dir[int(current_scene[-1]) - 1]
+            next_scene = gameplay(song_json)
+
         else:
             # ถ้าเจอ scene แปลก ๆ ให้ดีดกลับไป start ไปก่อน
             next_scene = "start"

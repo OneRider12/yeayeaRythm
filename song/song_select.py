@@ -1,5 +1,7 @@
 import pygame, sys
 import ui.ui as ui   #จาก ui.py
+from config.song_dir import *
+from game.GamePage2 import GamePage
 
 WIDTH, HEIGHT = 1200, 800
 
@@ -16,36 +18,6 @@ def run(screen, dt):
         run.player       = pygame.font.Font(ui.FONT_PATH, 20)
 
         # ---------- คลาสปุ่มเพลง ----------
-        class SongButton(ui.Button):
-            def __init__(self, name, stars, center):
-                # กล่องยาวฝั่งซ้าย
-                super().__init__("", center, size=(520, 90), radius=35)
-                self.song_name = name
-                self.stars = stars  # 1–3 ดาว
-
-            def draw(self, surface):
-                # วาดกล่องหลัก + เงา + animation
-                super().draw(surface)
-                r = self.rect()
-
-                # แถบสีเทาด้านซ้าย (เหมือนช่องใน mockup)
-                thumb_w = int(r.width * 0.22)
-                thumb_rect = pygame.Rect(r.x, r.y, thumb_w, r.height)
-                pygame.draw.rect(surface, (230, 230, 230),
-                                 thumb_rect, border_radius=int(self.radius * self.scale))
-
-                # ชื่อเพลง (วางด้านขวาของแถบเทา)
-                name_x = r.x + thumb_w + 24
-                name_y = r.y + 15
-                name_surf = run.FONT_LABEL.render(self.song_name, True, ui.BTN_TEXT)
-                surface.blit(name_surf, (name_x, name_y))
-
-                # แสดง Level 
-                level_text = f"Lv.{self.stars}"
-                lvl_surf = run.FONT_LABEL.render(level_text, True, (0, 0, 0))
-                surface.blit(lvl_surf, (name_x, name_y + name_surf.get_height() + 6))
-
-
         run.SongButton = SongButton
 
         # ---------- ปุ่มเพลง 5 ปุ่ม ----------
@@ -56,7 +28,7 @@ def run(screen, dt):
         run.song_buttons = [
             SongButton("Song 1", 1, (song_center_x, first_y + 0 * gap_y)),
             SongButton("Song 2", 1, (song_center_x, first_y + 1 * gap_y)),
-            SongButton("Song 3", 2, (song_center_x, first_y + 2 * gap_y)),
+            SongButton("APT.", 2, (song_center_x, first_y + 2 * gap_y)),
             SongButton("Song 4", 3, (song_center_x, first_y + 3 * gap_y)),
             SongButton("Song 5", 3, (song_center_x, first_y + 4 * gap_y)),
         ]
@@ -78,20 +50,9 @@ def run(screen, dt):
         # สีกล่อง leaderboard 
         run.LB_BOX_COLOR = (250, 248, 220)
 
-    # ---------- Event ----------
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            return "quit"
-
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if run.play_button.was_clicked(event):
-                return "play"        # ไว้ต่อเข้าหน้าเล่นจริงทีหลัง
-            if run.home_button.was_clicked(event):
-                return "start"
-
-    # ---------- Update ----------
     mouse = pygame.mouse.get_pos()
 
+    # -------- Update 1 ----------
     hover_index = None
     for i, b in enumerate(run.song_buttons):
         b.update(mouse, dt)
@@ -100,7 +61,21 @@ def run(screen, dt):
 
     if hover_index is not None:
         run.active_song_index = hover_index
+        run.SongButton.song_index = hover_index
 
+    # ---------- Event ----------
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            return "quit"
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if run.play_button.was_clicked(event):
+                # print(run.SongButton.song_index + 1)
+                return f"song0{run.SongButton.song_index + 1}"
+            if run.home_button.was_clicked(event):
+                return "start"
+
+    # --------- Update 2 ----------
     run.play_button.update(mouse, dt)
     run.home_button.update(mouse, dt)
 
@@ -165,3 +140,37 @@ def run(screen, dt):
 
     pygame.display.flip()
     return None
+
+
+class SongButton(ui.Button):
+    def __init__(self, name, stars, center):
+        # กล่องยาวฝั่งซ้าย
+        super().__init__("", center, size=(520, 90), radius=35)
+        self.song_name = name
+        self.stars = stars  # 1–3 ดาว
+
+        self.song_index = 0
+        self.song_json_dir = f"/song0{self.song_index + 1}.json"
+
+    def draw(self, surface):
+        # วาดกล่องหลัก + เงา + animation
+        super().draw(surface)
+        r = self.rect()
+
+        # แถบสีเทาด้านซ้าย (เหมือนช่องใน mockup)
+        thumb_w = int(r.width * 0.22)
+        thumb_rect = pygame.Rect(r.x, r.y, thumb_w, r.height)
+        pygame.draw.rect(surface, (230, 230, 230),
+                         thumb_rect, border_radius=int(self.radius * self.scale))
+
+        # ชื่อเพลง (วางด้านขวาของแถบเทา)
+        name_x = r.x + thumb_w + 24
+        name_y = r.y + 15
+        name_surf = run.FONT_LABEL.render(self.song_name, True, ui.BTN_TEXT)
+        surface.blit(name_surf, (name_x, name_y))
+
+        # แสดง Level
+        level_text = f"Lv.{self.stars}"
+        lvl_surf = run.FONT_LABEL.render(level_text, True, (0, 0, 0))
+        surface.blit(lvl_surf, (name_x, name_y + name_surf.get_height() + 6))
+

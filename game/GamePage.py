@@ -266,7 +266,7 @@ class GamePage(Screen, EngineConfig):
                              GAME_EDGE_CENTER_LINE_START,
                              GAME_EDGE_CENTER_LINE_END, 20)
 
-            # Event checker
+            # Event checker_fx
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.isRunning = False
