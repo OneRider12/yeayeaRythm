@@ -6,6 +6,7 @@ from config.FontConstant import *
 from config.PageConstant import *
 
 from config.EngineConfig import EngineConfig
+from config.game_config import game_settings
 from util.Box import Box
 from util.Screen import Screen
 from util.Text import Text
@@ -402,6 +403,11 @@ class GamePage(Screen, EngineConfig):
     def run(self):
 
         # Play Song
+        if game_settings["music"]:
+            self.music_volume = 0.8
+        else:
+            self.music_volume = 0
+
         self.play_song()
 
         while self.isRunning:

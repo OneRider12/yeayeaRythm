@@ -1,5 +1,4 @@
-import pygame
-import sys
+import pygame, sys, json
 
 from start.Start import run as start
 from setting.Setting import run as setting
@@ -10,6 +9,25 @@ from game.GamePage2 import run as gameplay
 from config.song_dir import *
 
 WIDTH, HEIGHT = 1200, 800
+SONG_DATA_DIR = "assets/song_data/song.json"
+
+def load_data(filename):
+    try:
+        # Use 'with open' to open the file for reading ('r')
+        with open(filename, 'r', encoding='utf-8') as file:
+            # The json.load() function reads the file content,
+            # parses the JSON structure, and returns a Python dictionary/list.
+            data = json.load(file)
+            print(data)
+            return data
+
+    except FileNotFoundError:
+        print(f"Error: The file '{filename}' was not found.")
+        return None
+    except json.JSONDecodeError:
+        print(f"Error: The file '{filename}' contains invalid JSON syntax.")
+        return None
+
 
 def main():
     pygame.init()
@@ -24,6 +42,8 @@ def main():
                 SONG03_JSON_DIR,
                 SONG04_JSON_DIR,
                 SONG05_JSON_DIR)
+
+    song_data = load_data(SONG_DATA_DIR)
 
     
     while True:
@@ -44,6 +64,7 @@ def main():
             next_scene = credit()
 
         elif "song0" in current_scene:
+            song_number = int(current_scene[-1])
             song_json = song_dir[int(current_scene[-1]) - 1]
             next_scene = gameplay(song_json)
 

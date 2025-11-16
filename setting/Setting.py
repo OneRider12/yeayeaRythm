@@ -1,8 +1,8 @@
 import pygame, sys
 import ui.ui as ui  # ใช้ UI กลาง
+from config.game_config import *
 
 WIDTH, HEIGHT = 1200, 800
-
 
 def run(screen, dt):
     ui.init_fonts()
@@ -27,13 +27,15 @@ def run(screen, dt):
 
         # ---- classes ----
         class ToggleSwitch:
-            def __init__(self, right_center, track_size=(160, 56), radius=28, value=False):
+            def __init__(self, right_center, track_size=(160, 56), radius=28, value=False, callback=None):
                 self.center = pygame.Vector2(right_center)
                 self.tw, self.th = track_size
                 self.radius = radius
                 self.value = value
                 self.anim = 1.0 if value else 0.0
                 self.target = self.anim
+
+                self.callback = callback
 
             def rect(self):
                 r = pygame.Rect(0, 0, self.tw, self.th)
@@ -69,11 +71,15 @@ def run(screen, dt):
                     self.value = not self.value
                     self.target = 1.0 if self.value else 0.0
 
+                    if self.callback is not None:
+                        self.callback(self.value)
+
+
         class SettingRow:
-            def __init__(self, label, y, switch_default=False):
+            def __init__(self, label, y, switch_default=False, callback=None):
                 self.label = label
                 self.box_rect = pygame.Rect(WIDTH // 2 - 420, y - 36, 840, 72)
-                self.switch = ToggleSwitch((self.box_rect.right - 90, y), value=switch_default)
+                self.switch = ToggleSwitch((self.box_rect.right - 90, y), value=switch_default, callback=callback)
 
             def update(self, mouse_pos, dt):
                 self.switch.update(mouse_pos, dt)
@@ -96,8 +102,8 @@ def run(screen, dt):
 
         # create once
         run.rows = [
-            SettingRow("MV Background", y=250, switch_default=True),
-            SettingRow("Sound",         y=340, switch_default=True),
+            SettingRow("MV Background", y=250, switch_default=game_settings["music"], callback=config_music),
+            SettingRow("Sound",         y=340, switch_default=game_settings["mv"], callback=config_mv),
         ]
         run.buttons = [
             ui.Button("BACK", (WIDTH // 2, 550)),

@@ -14,7 +14,7 @@ def run(screen, dt):
         # สร้างปุ่มครั้งเดียว
         run.buttons = [
             ui.Button("PLAY",        (WIDTH // 2, 300)),
-            ui.Button("LEADERBOARD", (WIDTH // 2, 420)),
+            # ui.Button("LEADERBOARD", (WIDTH // 2, 420)),
             ui.Button("SETTING",     (WIDTH // 2, 540)),
             ui.Button("CREDIT",      (WIDTH // 2, 660)),
         ]
