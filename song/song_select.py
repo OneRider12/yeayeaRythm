@@ -1,9 +1,26 @@
-import pygame, sys
+import pygame, sys, json
 import ui.ui as ui   #จาก ui.py
 from config.song_dir import *
 from game.GamePage2 import GamePage
 
 WIDTH, HEIGHT = 1200, 800
+SCORE_DIR = "assets/score/score.json"
+
+def load_data(filename):
+    try:
+        # Use 'with open' to open the file for reading ('r')
+        with open(filename, 'r', encoding='utf-8') as file:
+            # The json.load() function reads the file content,
+            # parses the JSON structure, and returns a Python dictionary/list.
+            data = json.load(file)
+            return data
+
+    except FileNotFoundError:
+        print(f"Error: The file '{filename}' was not found.")
+        return None
+    except json.JSONDecodeError:
+        print(f"Error: The file '{filename}' contains invalid JSON syntax.")
+        return None
 
 
 def run(screen, dt):
@@ -11,6 +28,9 @@ def run(screen, dt):
 
     if not hasattr(run, "_inited"):
         run._inited = True
+
+        run.leaderboard_data = load_data(SCORE_DIR)
+        print(run.leaderboard_data)
 
         # ---------- ฟอนต์เฉพาะหน้าเลือกเพลง ----------
         run.FONT_TITLE_SMALL = pygame.font.Font(ui.FONT_PATH, 60)
@@ -24,7 +44,7 @@ def run(screen, dt):
         song_center_x = 350     # <---- ขยับซ้าย/ขวา
         first_y = 210           # <---- ขยับขึ้น/ลง
         gap_y = 120             # <---- ระยะห่างระหว่างปุ่ม
-       
+
         run.song_buttons = [
             SongButton("Song 1", 1, (song_center_x, first_y + 0 * gap_y)),
             SongButton("Song 2", 1, (song_center_x, first_y + 1 * gap_y)),
@@ -38,16 +58,16 @@ def run(screen, dt):
         run.home_button = ui.Button("HOME", (925, 700), size=(260, 70), radius=35)
 
         # ---------- ข้อมูล Leaderboard 5 ชุด ----------
-        run.leaderboards = [
-            [("AAA", "100000"), ("BBB", "80000"), ("CCC", "60000")],
-            [("DDD", "90000"),  ("EEE", "70000"), ("FFF", "50000")],
-            [("GGG", "120000"), ("HHH", "90000"), ("III", "65000")],
-            [("JJJ", "150000"), ("KKK", "110000"), ("LLL", "90000")],
-            [("MMM", "200000"), ("NNN", "150000"), ("OOO", "120000")],
-        ]
+        # run.leaderboards = [
+        #     [("AAA", "100000"), ("BBB", "80000"), ("CCC", "60000")],
+        #     [("DDD", "90000"),  ("EEE", "70000"), ("FFF", "50000")],
+        #     [("GGG", "120000"), ("HHH", "90000"), ("III", "65000")],
+        #     [("JJJ", "150000"), ("KKK", "110000"), ("LLL", "90000")],
+        #     [("MMM", "200000"), ("NNN", "150000"), ("OOO", "120000")],
+        # ]
         run.active_song_index = 0  # default
 
-        # สีกล่อง leaderboard 
+        # สีกล่อง leaderboard
         run.LB_BOX_COLOR = (250, 248, 220)
 
     mouse = pygame.mouse.get_pos()
@@ -96,7 +116,9 @@ def run(screen, dt):
         b.draw(screen)
 
     # Leaderboard ของเพลงที่ active อยู่
-    lb_set = run.leaderboards[run.active_song_index]
+    # lb_set = run.leaderboards[run.active_song_index]
+    lb_set = [(str(name), str(score)) for name, score in run.leaderboard_data[run.active_song_index]["leaderboard"].items()]
+
 
     base_y = 210
     gap_y = 110

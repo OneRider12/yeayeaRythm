@@ -402,7 +402,7 @@ class GamePage(Screen, EngineConfig):
     def run(self):
 
         # Play Song
-        # self.play_song()
+        self.play_song()
 
         while self.isRunning:
             # Reset screen

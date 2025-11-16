@@ -1,0 +1,42 @@
+[
+  {
+    "song": 1,
+    "leaderboard": {
+      "AAA": 1000,
+      "BBB": 100,
+      "CCC": 10
+    }
+  },
+  {
+    "song": 2,
+    "leaderboard": {
+      "DDD": 1000,
+      "EEE": 100,
+      "FFF": 10
+    }
+  },
+  {
+    "song": 3,
+    "leaderboard": {
+      "GGG": 1000,
+      "HHH": 100,
+      "III": 10
+    }
+  },
+  {
+    "song": 4,
+    "leaderboard": {
+      "JJJ": 1000,
+      "KKK": 100,
+      "LLL": 10
+    }
+  },
+  {
+    "song": 5,
+    "leaderboard": {
+      "MMM": 1000,
+      "NNN": 100,
+      "OOO": 10
+    }
+  }
+]

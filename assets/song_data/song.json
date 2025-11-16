@@ -1,0 +1,42 @@
+[
+  {
+    "name": "SONG1",
+    "artist": "IDK just me bro.",
+    "bpm": 160,
+    "difficulty": 1,
+    "notes_sheet_dir": "assets/song_data/song01_notes_sheet.txt",
+    "song_dir" : "assets/song_mp3/"
+  },
+  {
+    "name": "SONG2",
+    "artist": "IDK just me bro.",
+    "bpm": 120,
+    "difficulty": 1,
+    "notes_sheet_dir": "assets/song_data/song02_notes_sheet.txt",
+    "song_dir" : "assets/song_mp3/"
+  },
+  {
+    "name": "ROSÉ & Bruno Mars - APT",
+    "artist": "IDK just me bro.",
+    "bpm": 160,
+    "difficulty": 2,
+    "notes_sheet_dir": "assets/song_data/song03_notes_sheet.txt",
+    "song_dir" : "assets/song_mp3/ROSÉ & Bruno Mars - APT..mp3"
+  },
+  {
+    "name": "SONG4",
+    "artist": "IDK just me bro.",
+    "bpm": 160 ,
+    "difficulty": 2,
+    "notes_sheet_dir": "assets/song_data/song04_notes_sheet.txt",
+    "song_dir" : "assets/song_mp3/"
+  },
+  {
+    "name": "SONG5",
+    "artist": "IDK just me bro.",
+    "bpm": 180 ,
+    "difficulty": 3,
+    "notes_sheet_dir": "assets/song_data/song05_notes_sheet.txt",
+    "song_dir" : "assets/song_mp3/"
+  }
+]
