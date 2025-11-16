@@ -1,8 +1,13 @@
 import pygame
-from util.Screen import Screen
+
+import sys
 from config.FontConstant import FONT_PATH
 from config.PageConstant import SCREEN_BACKGROUND
-
+from util.Screen import Screen
+from util.Text import Text
+from itertools import cycle
+from PIL import Image  # ใช้แยกเฟรมของ GIF
+from math import radians
 
 class LeaderPage(Screen):
     def __init__(self):
@@ -17,18 +22,18 @@ class LeaderPage(Screen):
         self.isRunning = True
 
         # 🎨 ฟอนต์
-        self.font_title = pygame.font.Font(FONT_PATH, 100)
-        self.font_label = pygame.font.Font(FONT_PATH, 45)
+        self.font_title = pygame.font.Font(FONT_PATH, 48)
+        self.font_label = pygame.font.Font(FONT_PATH, 35)
         self.font_button = pygame.font.Font(FONT_PATH, 55)
 
         # 🎨 สี
         self.text_color = (255, 255, 255)
-        self.box_color = (240, 240, 240)
+        self.box_color = (255, 254, 224)
         self.number_color = (25, 25, 60)
         self.button_color = (240, 240, 240)
         self.button_shadow = (80, 90, 130)
 
-        # พื้นที่ฝั่งขวา (ใช้ดีไซน์เดียวกับหน้า CreditsPage)
+        # พื้นที่ฝั่งขวา 
         self.panel_x = 350
 
         # ปุ่ม
@@ -47,40 +52,42 @@ class LeaderPage(Screen):
 
         # 🏆 หัวข้อ Leaderboard
         title = self.font_title.render("LEADERBOARD", True, self.text_color)
-        self.screen.blit(title, (600 - title.get_width() // 2, 80))
+        self.screen.blit(title, (735, 141))
 
         # 🔳 กล่องอันดับ 1–3
-        rank_y = 300
-        rank_gap = 120
+        fixed_x = 722
+        start_y = 247
+        # ขนาดกล่อง
+        box_width = 335
+        box_height = 64
+        border_radius = 25
+
+       # ระยะห่างแนวตั้งระหว่างกล่อง
+        gap_y = 112
         for i, (name, score) in enumerate(self.ranks):
-            rect = pygame.Rect(self.panel_x + 100, rank_y + i * rank_gap, 500, 90)
-            pygame.draw.rect(self.screen, self.box_color, rect, border_radius=35)
+          rect = pygame.Rect(fixed_x, start_y + i * gap_y, box_width, box_height)
+          pygame.draw.rect(self.screen, self.box_color, rect, border_radius=border_radius)
 
-            # อันดับ
-            num_text = self.font_label.render(str(i + 1), True, self.number_color)
-            self.screen.blit(num_text, (rect.x + 30, rect.y + 20))
+          # อันดับ
+          num_text = self.font_label.render(str(i + 1), True, self.number_color)
+          self.screen.blit(num_text, (rect.x + 20, rect.y + 10))
 
-            # ชื่อ
-            name_text = self.font_label.render(name, True, (70, 70, 90))
-            self.screen.blit(name_text, (rect.x + 130, rect.y + 20))
+          # ชื่อ
+          name_text = self.font_label.render(name, True, (70, 70, 90))
+          self.screen.blit(name_text, (rect.x + 90, rect.y + 10))
+ 
+          # คะแนน
+          score_text = self.font_label.render(score, True, (100, 100, 120))
+          self.screen.blit(score_text, (rect.x + 230, rect.y + 10))
 
-            # คะแนน
-            score_text = self.font_label.render(score, True, (100, 100, 120))
-            self.screen.blit(score_text, (rect.x + 380, rect.y + 20))
-
-            # 👑 มงกุฎเฉพาะอันดับ 1
-            if i == 0:
-                pygame.draw.polygon(
-                    self.screen, (255, 215, 0),
-                    [
-                        (rect.x + 60, rect.y - 25),
-                        (rect.x + 80, rect.y),
-                        (rect.x + 100, rect.y - 25),
-                        (rect.x + 120, rect.y),
-                        (rect.x + 140, rect.y - 25)
-                    ]
-                )
-
+        image = pygame.image.load("assets/crown/crown-removebg-preview.png").convert_alpha()  # convert_alpha() ถ้ารูปมีโปร่งใส
+        # กำหนดตำแหน่ง
+        x, y = 692, 188
+        rect = image.get_rect()
+        rect.topleft = (x, y)  # ตั้งมุมซ้ายบนที่ x=692, y=188
+        # วาดรูปบนหน้าจอ
+        self.screen.blit(image, rect)
+        
         # 🟣 ปุ่ม PLAY
         self.draw_button(self.play_rect, "PLAY")
         # 🟣 ปุ่ม HOME
@@ -116,6 +123,6 @@ class LeaderPage(Screen):
 
             self.draw()
             pygame.display.flip()
-            self.clock.tick(60)
+            self.clock.tick(12)
 
         pygame.quit()
