@@ -31,8 +31,10 @@ def init_fonts():
         FONT_BTN   = pygame.font.SysFont("Consolas", 54, bold=True)
 
 
-class Button:
+class Button(pygame.sprite.Sprite):
     def __init__(self, text, center, size=(400, 80), radius=40):
+        super().__init__()
+
         self.text = text
         self.center = pygame.Vector2(center)
         self.base_w, self.base_h = size
