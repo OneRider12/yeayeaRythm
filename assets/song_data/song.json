@@ -2,6 +2,7 @@
   {
     "name": "SONG1",
     "desc": {
+      "name": "SONG1",
       "artist": "IDK just me bro.",
       "bpm": 160,
       "difficulty": 1,
@@ -12,6 +13,7 @@
   {
     "name": "SONG2",
     "desc": {
+      "name": "SONG2",
       "artist": "IDK just me bro.",
       "bpm": 120,
       "difficulty": 1,
@@ -22,6 +24,7 @@
   {
     "name": "APT.",
     "desc": {
+      "name": "APT.",
       "artist": "ROSÉ & Bruno Mars",
       "bpm": 160,
       "difficulty": 4,
@@ -32,6 +35,7 @@
   {
     "name": "SONG4",
     "desc": {
+      "name": "SONG4",
       "artist": "IDK just me bro.",
       "bpm": 120,
       "difficulty": 1,
@@ -42,6 +46,7 @@
   {
     "name": "SONG5",
     "desc": {
+      "name": "SONG5",
       "artist": "IDK just me bro.",
       "bpm": 120,
       "difficulty": 1,

@@ -2,7 +2,7 @@ import pygame
 
 from util.Box import Box
 
-
+## NOT IN USE ##
 class Button(Box):
     def __init__(self, dimension, color, position:tuple, text:str=None):
         super().__init__(dimension, color, position, text)

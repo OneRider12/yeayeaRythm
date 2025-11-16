@@ -1,11 +1,13 @@
-import pygame, sys
+import pygame, pygame_gui, sys
 import ui.ui as ui  # ใช้ UI กลาง
+from config.PageConstant import SCREEN_CENTER
 from config.game_config import *
 
 WIDTH, HEIGHT = 1200, 800
 
 def run(screen, dt):
     ui.init_fonts()
+    clock = pygame.time.Clock()
 
     if not hasattr(run, "_inited"):
         run._inited = True
@@ -102,8 +104,8 @@ def run(screen, dt):
 
         # create once
         run.rows = [
-            SettingRow("MV Background", y=250, switch_default=game_settings["music"], callback=config_music),
-            SettingRow("Sound",         y=340, switch_default=game_settings["mv"], callback=config_mv),
+            SettingRow("MV Background", y=250, switch_default=game_settings["mv"], callback=config_mv),
+            SettingRow("Sound",         y=340, switch_default=game_settings["music"], callback=config_music),
         ]
         run.buttons = [
             ui.Button("BACK", (WIDTH // 2, 550)),

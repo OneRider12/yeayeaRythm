@@ -1,12 +1,9 @@
-import pygame
-import json
-
-from config.BoxConstant import NOTE_VECTOR_RES, BOX_TEMPO_COORD, BOX_TEMPO_SIZE, BOX_TEMPO_COLOR
 from config.FontConstant import *
 from config.PageConstant import *
 
 from config.EngineConfig import EngineConfig
 from config.game_config import game_settings
+from ui.ui import Button
 from util.Box import Box
 from util.Screen import Screen
 from util.Text import Text
@@ -40,7 +37,7 @@ NOTE_BLANK = ((1, 1), (*SCREEN_BACKGROUND, 1), (SCREEN_WIDTH_CENTER, SCREEN_HEIG
 # BOX_LONG_NOTE_COORD = [(LANE1_X, -300), (LANE2_X, -300), (LANE3_X, -300), (LANE4_X, -300)]
 # BOX_LONG_NOTE_ATTR = lambda lane: (NOTE_LONG_SIZE, BOX_NOTE_COLORS[lane], BOX_LONG_NOTE_COORD[lane])
 
-                    # Single / Long (2) / Long (3)
+# Single / Long (2) / Long (3)
 UNIV_NOTE_SIZE = [(180, 60), (180, 420), (180, 900)]
 UNIV_NOTE_COORD = [-300, -480, -720]
 LANEX_X = [GAME_WIDTH_CENTER - CHECKER_GAP * 3 / 2 - CHECKER_SIZE[0] * 3 / 2,
@@ -53,23 +50,23 @@ UNIV_NOTE_DATA = lambda lane, size: (UNIV_NOTE_SIZE[size], BOX_NOTE_COLORS[lane]
 
 SCORE_SIZE = 80
 
+
 class GamePage(Screen, EngineConfig):
-    def __init__(self, filename):
+    def __init__(self, song_name):
         # Screen, GameEngine setup
         Screen.__init__(self)
         EngineConfig.__init__(self)
 
         # Load song data
-        self.song_data = self._load(filename)
-        self.sheet_dir = self.song_data.get("notes_sheet_dir")
-        self.song_dir = self.song_data.get("song_dir")
+        self.song_data = self._load(song_name)  # as Dict
+        self.sheet_dir = self.song_data["notes_sheet_dir"]
         self.notes_sheets = self.__get_notes(self.sheet_dir)
 
         # Setup screen
-        self.screen = self.setup(SCREEN_BACKGROUND, self.song_data.get("name") + "- Gameplay")
+        self.screen = self.setup(SCREEN_BACKGROUND, self.song_data["name"] + "- Gameplay")
 
         # Counter (calibrate with song data)
-        self.bpm = self.song_data.get("bpm")
+        self.bpm = self.song_data["bpm"]
         self.tick_base = 120
         self.tick_multi = self.bpm / 120
 
@@ -112,7 +109,6 @@ class GamePage(Screen, EngineConfig):
         # Ending game
         self.isEnded = False
         self.ending_tick_clock = pygame.time.Clock()
-        self.ending_tick_counter = 0
 
         # Initialize all UI
         self.draft_all()
@@ -219,7 +215,7 @@ class GamePage(Screen, EngineConfig):
             # if notes[n].isdigit():
             note_size = int(notes[n])
             if note_size >= 1:
-                note = Box(*UNIV_NOTE_DATA(n, note_size-1))
+                note = Box(*UNIV_NOTE_DATA(n, note_size - 1))
                 note.isLongNote = True if note_size > 1 else False
             else:
                 note = Box(*NOTE_BLANK)
@@ -290,24 +286,21 @@ class GamePage(Screen, EngineConfig):
                 lane_list.pop(0)
                 self.note_in_lane[0][1][0].kill()
 
-
-    # WIP; Add Button UI
     def pause_game(self):
         sec_paused = 0
+        dt = 100
 
         # Setup UI
-        self.pause_popup = Box((400, 300), (59, 49, 73), SCREEN_CENTER)
+        self.pause_popup = Box((600, 450), (59, 49, 73), SCREEN_CENTER)
         self.pause_text = Text("PAUSE", 60, (253, 252, 228), self.screen,
-                               (SCREEN_WIDTH_CENTER, SCREEN_HEIGHT_CENTER - 80))
-        self.home_button = Text("HOME", 52, (253, 252, 228), self.screen,
-                                (SCREEN_WIDTH_CENTER, SCREEN_HEIGHT_CENTER + 50))
+                               (SCREEN_WIDTH_CENTER, SCREEN_HEIGHT_CENTER - 120))
+        home_button = Button("Home", (SCREEN_WIDTH_CENTER, SCREEN_HEIGHT_CENTER + 80))
 
         # Display UI
         pause_group = pygame.sprite.Group()
-        pause_group.add(self.pause_popup, self.pause_text, self.home_button)
+        pause_group.add(self.pause_popup, self.pause_text)
         self.ui.add(self.pause_popup, layer=201)
         self.ui.add(self.pause_text, layer=202)
-        self.ui.add(self.home_button, layer=203)
         print("**PAUSE**")
 
         # Pause song
@@ -317,6 +310,9 @@ class GamePage(Screen, EngineConfig):
         while self.isPause:
 
             self.update_static()
+
+            home_button.update(self.mouse, dt)
+            home_button.draw(self.screen)
 
             if self.waiting_tick_counter == 100:
                 self.waiting_tick_counter = 0
@@ -329,7 +325,6 @@ class GamePage(Screen, EngineConfig):
                     if event.key == pygame.K_ESCAPE:
                         self.pause_popup.kill()
                         self.pause_text.kill()
-                        self.home_button.kill()
                         self.unpause_song()
                         print("**UNPAUSE**")
                         print(f'log: paused for {sec_paused}.{self.waiting_tick_counter}s')
@@ -339,28 +334,44 @@ class GamePage(Screen, EngineConfig):
                         self.isPause = False
                         self.isRunning = False
 
-            self.waiting_tick_clock.tick(100)
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if home_button.was_clicked(event):
+                        self.pause_popup.kill()
+                        self.pause_text.kill()
+                        self.unpause_song()
+                        print("**UNPAUSE**")
+                        print(f'log: paused for {sec_paused}.{self.waiting_tick_counter}s')
+                        self.isPause = False
+                        return
+
+            self.waiting_tick_clock.tick(dt)
             self.waiting_tick_counter += 1
 
             pygame.display.flip()
 
     def end_game(self):
-
-        self.end_popup = Box((400, 300), (59, 49, 73), SCREEN_CENTER)
+        dt = 100
+        self.end_popup = Box((560, 420), (59, 49, 73), SCREEN_CENTER)
         self.end_text = Text("ENDED", 60, (253, 252, 228), self.screen,
-                             (SCREEN_WIDTH_CENTER, SCREEN_HEIGHT_CENTER - 80))
-        self.home_button = Text("HOME", 52, (253, 252, 228), self.screen,
-                                (SCREEN_WIDTH_CENTER, SCREEN_HEIGHT_CENTER + 50))
+                             (SCREEN_WIDTH_CENTER, SCREEN_HEIGHT_CENTER - 160))
+        self.score_text = Text(str(self.score), 100, (253, 252, 228), self.screen,
+                               (SCREEN_WIDTH_CENTER, SCREEN_HEIGHT_CENTER))
+        home_button = Button("Home", (SCREEN_WIDTH_CENTER, SCREEN_HEIGHT_CENTER + 160))
+
         ending_group = pygame.sprite.Group()
-        ending_group.add(self.end_popup, self.end_text, self.home_button)
+        ending_group.add(self.end_popup, self.end_text, self.score_text)
         self.ui.add(self.end_popup, layer=501)
         self.ui.add(self.end_text, layer=502)
-        self.ui.add(self.home_button, layer=503)
+        self.ui.add(self.score_text, layer=503)
+
         print("**ENDED**")
 
         while self.isEnded:
 
             self.update_static()
+
+            home_button.update(self.mouse, dt)
+            home_button.draw(self.screen)
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -369,25 +380,25 @@ class GamePage(Screen, EngineConfig):
                     if event.key == pygame.K_ESCAPE:
                         self.end_popup.kill()
                         self.end_text.kill()
-                        self.home_button.kill()
+                        self.score_text.kill()
 
                         self.isEnded = False
-
+                        return "quit"
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if home_button.was_clicked(event):
                         return "start"
 
-            self.ending_tick_clock.tick(100)
-            self.ending_tick_counter += 1
+            self.ending_tick_clock.tick(dt)
 
             pygame.display.flip()
             self.isRunning = False
-
 
     # Pressing >1 box flow, PRESSDOWN -> __update -> PRESSUP -> kill()
     def __press_DOWN_method(self, lane):
         checking_box = self.__get_checking_box(lane)
         if checking_box is not None:
             if not checking_box.isLongNote:
-            # print(checking_box)
+                # print(checking_box)
                 self.__score_calc(
                     self.__get_successful(self.checker_boxes_list[lane - 1].rect, checking_box.rect))
                 checking_box.kill()
@@ -399,8 +410,9 @@ class GamePage(Screen, EngineConfig):
             print(
                 f"log: pressed d {self.note_in_lane[lane - 1][1][0] if len(self.note_in_lane[lane - 1][1]) > 0 else None}")
 
-
     def run(self):
+
+        # self.end_game()
 
         # Play Song
         if game_settings["music"]:
@@ -408,7 +420,7 @@ class GamePage(Screen, EngineConfig):
         else:
             self.music_volume = 0
 
-        self.play_song()
+        # self.play_song()
 
         while self.isRunning:
             # Reset screen
