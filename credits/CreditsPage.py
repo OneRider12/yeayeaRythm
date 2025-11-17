@@ -30,8 +30,6 @@ class CreditsPage(Screen):
         self.text_font = pygame.font.Font(FONT_PATH, 35)
         self.button_font = pygame.font.Font(FONT_PATH, 55)
 
-        # --- กล่องและปุ่ม ---
-        #self.credit_box = pygame.Rect(350, 250, 500, 250)
         # --- กล่องแบบภาพแทน rect ---
         self.credit_box_img = pygame.image.load("assets/groupphoto/image.png").convert_alpha()
         self.credit_box_rect = self.credit_box_img.get_rect(center=(600, 330))
@@ -79,9 +77,6 @@ class CreditsPage(Screen):
                     self.isRunning = False
                     return "start"
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    # if self.button_rect.collidepoint(event.pos):
-                    #     print("Back to HOME")
-                    #     self.isRunning = False
 
                     self.isRunning = False
                     return "start"
