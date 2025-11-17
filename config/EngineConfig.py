@@ -35,6 +35,7 @@ class EngineConfig:
             print(f"Error: The file '{FILENAME}' contains invalid JSON syntax.")
             return None
 
+
     def play_song(self):
         pygame.mixer.music.set_volume(self.music_volume)
         pygame.mixer.music.play()
