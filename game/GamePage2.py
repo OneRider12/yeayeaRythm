@@ -58,12 +58,13 @@ class GamePage(Screen, EngineConfig):
         EngineConfig.__init__(self)
 
         # Load song data
-        self.song_data = self._load(song_name)  # as Dict
+        self.song_data = self._load_song(song_name)  # as Dict
+        self.leaderboard = self._load_score(song_name)
         self.sheet_dir = self.song_data["notes_sheet_dir"]
         self.notes_sheets = self.__get_notes(self.sheet_dir)
 
         # Setup screen
-        self.screen = self.setup(SCREEN_BACKGROUND, self.song_data["name"] + "- Gameplay")
+        self.screen = self.setup(SCREEN_BACKGROUND, self.song_data["name"] + "- Gameplay", False)
 
         # Counter (calibrate with song data)
         self.bpm = self.song_data["bpm"]
@@ -367,6 +368,8 @@ class GamePage(Screen, EngineConfig):
         self.ui.add(self.end_text, layer=502)
         self.ui.add(self.score_text, layer=503)
 
+        self._update_score_lb(self.leaderboard)
+
         print("**ENDED**")
 
         while self.isEnded:
@@ -395,6 +398,15 @@ class GamePage(Screen, EngineConfig):
 
             pygame.display.flip()
             self.isRunning = False
+
+    def _update_score_lb(self, lb):
+        temp = 0
+        with open('assets/score/score.json', 'w') as file:
+            current_score = self.leaderboard['leaderboard']
+            for k, v in lb.items():
+                if self.score > v:
+                    temp, v = v, temp
+
 
     # Pressing >1 box flow, PRESSDOWN -> __update -> PRESSUP -> kill()
     def __press_DOWN_method(self, lane_index):
@@ -434,11 +446,12 @@ class GamePage(Screen, EngineConfig):
         else:
             self.music_volume = 0
 
-        # self.play_song()
+        self.play_song()
 
         while self.isRunning:
             # Reset screen
             self.screen.fill(SCREEN_BACKGROUND)
+            self.draw_background()
 
             # Update state
             self.__update_tempo()
@@ -524,8 +537,12 @@ class GamePage(Screen, EngineConfig):
             self.clock.tick(self.tick_base)
             pygame.display.flip()
 
+        if (not self.isRunning and not self.isPause) or self.isEnded:
+            self.stop_song()
+
 
 def run(song_name):
+    print('game_instance!!!')
     game_instance = GamePage(song_name)
     game_instance.run()
     return "song_select"

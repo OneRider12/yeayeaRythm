@@ -39,19 +39,19 @@
       "artist": "Teriyaki Boyz",
       "bpm": 160,
       "difficulty": 4,
-      "notes_sheet_dir": "assets/song_data/song02_notes_sheet.txt",
+      "notes_sheet_dir": "assets/song_data/song04_notes_sheet.txt",
       "song_dir": "assets/song_mp3/Tokyo Drift_Teriyaki Boyz.mp3"
     }
   },
   {
-    "name": "มันต้องถอน.",
+    "name": "NewJeans.",
     "desc": {
-      "name": "มันต้องถอน.",
-      "artist": "ปอยฝ้าย มาลัยพร",
-      "bpm": 180,
+      "name": "NewJeans.",
+      "artist": "NewJeans",
+      "bpm": 134,
       "difficulty": 4,
-      "notes_sheet_dir": "assets/song_data/song02_notes_sheet.txt",
-      "song_dir": "assets/song_mp3/มันต้องถอน_ปอยฝ้าย.mp3"
+      "notes_sheet_dir": "assets/song_data/song05_notes_sheet.txt",
+      "song_dir": "assets/song_mp3/Newjeans__Newjeans.mp3"
     }
   }
 ]

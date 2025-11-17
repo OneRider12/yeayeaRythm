@@ -45,14 +45,15 @@ def run(screen, dt):
         first_y = 210           # <---- ขยับขึ้น/ลง
         gap_y = 120             # <---- ระยะห่างระหว่างปุ่ม
 
-        run.song_name = ("SONG1", "SONG2", "APT.", "SONG4", "SONG5")
+        # DO CHANGE EVERYTIME
+        run.song_name = ("BIRDS OF A FEATHER.", "Shinunoga E-Wa.", "APT.", "Tokyo Drift.", "NewJeans.")
 
         run.song_buttons = [
-            SongButton("Song 1", 1, (song_center_x, first_y + 0 * gap_y)),
-            SongButton("Song 2", 1, (song_center_x, first_y + 1 * gap_y)),
-            SongButton("APT.", 2, (song_center_x, first_y + 2 * gap_y)),
-            SongButton("Song 4", 3, (song_center_x, first_y + 3 * gap_y)),
-            SongButton("Song 5", 3, (song_center_x, first_y + 4 * gap_y)),
+            SongButton(run.song_name[0], 1, (song_center_x, first_y + 0 * gap_y)),
+            SongButton(run.song_name[1], 1, (song_center_x, first_y + 1 * gap_y)),
+            SongButton(run.song_name[2], 2, (song_center_x, first_y + 2 * gap_y)),
+            SongButton(run.song_name[3], 3, (song_center_x, first_y + 3 * gap_y)),
+            SongButton(run.song_name[4], 3, (song_center_x, first_y + 4 * gap_y)),
         ]
 
         # ---------- ปุ่ม PLAY / HOME ด้านขวาล่าง ----------

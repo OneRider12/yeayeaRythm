@@ -97,7 +97,8 @@ class CreditsPage(Screen):
                     self.isRunning = False
                     return "start"
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    if self.home_button.rect.collidepoint(event.pos):
+                    home_button_rect = self.home_button.rect()
+                    if home_button_rect.collidepoint(event.pos):
                         print("Back to HOME")
                         self.isRunning = False
 

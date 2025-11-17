@@ -1,7 +1,11 @@
 import pygame.time
 import json
 
-FILENAME = "assets/song_data/song.json"
+from config.PageConstant import SCREEN_WIDTH, SCREEN_HEIGHT
+
+FILENAME_SONG_DATA = "assets/song_data/song.json"
+FILENAME_SCORE_DATA = "assets/score/score.json"
+
 
 class EngineConfig:
     def __init__(self):
@@ -14,9 +18,9 @@ class EngineConfig:
 
         self.music_volume = 0.8
 
-    def _load(self, song_name):
+    def _load_song(self, song_name):
         try:
-            with open(FILENAME, 'r', encoding='utf-8') as file:
+            with open(FILENAME_SONG_DATA, 'r', encoding='utf-8') as file:
 
                 raw_data = json.load(file)
                 for data in raw_data:
@@ -29,23 +33,35 @@ class EngineConfig:
                         return data['desc']
 
         except FileNotFoundError:
-            print(f"Error: The file '{FILENAME}' was not found.")
+            print(f"Error: The file '{FILENAME_SONG_DATA}' was not found.")
             return None
         except json.JSONDecodeError:
-            print(f"Error: The file '{FILENAME}' contains invalid JSON syntax.")
+            print(f"Error: The file '{FILENAME_SONG_DATA}' contains invalid JSON syntax.")
             return None
 
+    def _load_score(self, song_name):
         try:
-            transparent_bg_image = pygame.image.load('assets/image/').convert_alpha()
-        except pygame.error as e:
-            print(f"Failed to load image: {e}")
-            # Handle error or use a fallback surface
-            transparent_bg_image = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
-            transparent_bg_image.fill((255, 0, 0, 128))  # Example fallback: semi-transparent red
+            with open(FILENAME_SCORE_DATA, 'r', encoding='utf-8') as file:
+                self.score_data = json.load(file)
+                for song in self.score_data:
+                    if song == song_name:
+                        print(self.score_data[song_name]['leaderboard'])
+                        return self.score_data[song_name]['leaderboard']
+
+        except FileNotFoundError:
+            print(f"Error: The file '{FILENAME_SCORE_DATA}' was not found.")
+            return None
+        except json.JSONDecodeError:
+            print(f"Error: The file '{FILENAME_SCORE_DATA}' contains invalid JSON syntax.")
+            return None
+
 
     def play_song(self):
         pygame.mixer.music.set_volume(self.music_volume)
         pygame.mixer.music.play()
+
+    def stop_song(self):
+        pygame.mixer.music.stop()
 
     def pause_song(self):
         pygame.mixer.music.pause()

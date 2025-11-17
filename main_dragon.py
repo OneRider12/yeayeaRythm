@@ -20,6 +20,7 @@ def load_song_name():
             for song_data in raw_data:
                 data.append(song_data['name'])
 
+            print(data)
             return data
 
     except FileNotFoundError:
@@ -59,11 +60,12 @@ def main():
             next_scene = credit()
 
         elif current_scene == "quit":
-            pygame.quit
+            pygame.quit()
 
         elif current_scene in song_name:
             # song_number = int(current_scene[-1])
             # song_json = song_dir[int(current_scene[-1]) - 1]
+            print(current_scene, song_name)
             next_scene = gameplay(current_scene)
 
         else:

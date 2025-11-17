@@ -1,8 +1,0 @@
-{
-  "name": "SONG1",
-  "artist": "IDK just me bro.",
-  "bpm": 160,
-  "difficulty": 1,
-  "notes_sheet_dir": "assets/song_data/song01_notes_sheet.txt",
-  "song_dir" : "assets/song_mp3/ROSÉ & Bruno Mars - APT..mp3"
-}
