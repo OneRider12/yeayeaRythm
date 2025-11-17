@@ -58,6 +58,9 @@ def main():
         elif current_scene == "credit":
             next_scene = credit()
 
+        elif current_scene == "quit":
+            pygame.quit
+
         elif current_scene in song_name:
             # song_number = int(current_scene[-1])
             # song_json = song_dir[int(current_scene[-1]) - 1]

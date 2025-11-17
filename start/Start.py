@@ -14,9 +14,9 @@ def run(screen, dt):
         # สร้างปุ่มครั้งเดียว
         run.buttons = [
             ui.Button("PLAY",        (WIDTH // 2, 300)),
-            # ui.Button("LEADERBOARD", (WIDTH // 2, 420)),
-            ui.Button("SETTING",     (WIDTH // 2, 540)),
-            ui.Button("CREDIT",      (WIDTH // 2, 660)),
+            ui.Button("SETTING", (WIDTH // 2, 420)),
+            ui.Button("CREDIT",     (WIDTH // 2, 540)),
+            ui.Button("QUIT",      (WIDTH // 2, 660)),
         ]
 
     # --- Events ---
@@ -30,8 +30,8 @@ def run(screen, dt):
                     return "setting"
                 elif b.text == "PLAY":
                     return "song_select"
-                elif b.text == "LEADERBOARD":
-                    return "leaderboard"
+                elif b.text == "QUIT":
+                    return "quit"
                 elif b.text == "CREDIT":
                     return "credit"
 

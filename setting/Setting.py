@@ -1,4 +1,4 @@
-import pygame, pygame_gui, sys
+import pygame, sys
 import ui.ui as ui  # ใช้ UI กลาง
 from config.PageConstant import SCREEN_CENTER
 from config.game_config import *
