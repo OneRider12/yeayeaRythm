@@ -269,25 +269,23 @@ class GamePage(Screen, EngineConfig):
             self.digits[n].update_color(score_color)
         print(f'score_digits: -- {score_text} --')
 
-    def __get_checking_box(self, lane) -> tuple:
+    def __get_checking_box(self, lane_index) -> Box:
         checking_box = None
-        isLongNote = None
-        lane_list = self.note_in_lane[lane - 1][1]
+        lane_list = self.note_in_lane[lane_index][1]
 
         if len(lane_list) > 0:
             if lane_list[0].rect.bottom > 400:
                 checking_box = lane_list[0]
-                isLaneNote = checking_box.isLongNote
-                if not isLaneNote:
+                if not checking_box.isLongNote:
                     lane_list.pop(0)
 
-        return checking_box, isLongNote
+        return checking_box
 
-    def __kill_long_note(self, lane: int):
-        lane_list = self.note_in_lane[lane][1]
+    def __kill_long_note(self, lane_index: int):
+        lane_list = self.note_in_lane[lane_index][1]
 
         for note in lane_list:
-            if note.isLongNote and self.isLongPressing[lane]:
+            if note.isLongNote and self.isLongPressing[lane_index]:
                 lane_list.pop(0)
                 self.note_in_lane[0][1][0].kill()
 
@@ -401,30 +399,33 @@ class GamePage(Screen, EngineConfig):
             self.isRunning = False
 
     # Pressing >1 box flow, PRESSDOWN -> __update -> PRESSUP -> kill()
-    def __press_DOWN_method(self, lane):
-        checking_box, isLongNote = self.__get_checking_box(lane)
+    def __press_DOWN_method(self, lane_index):
+        checking_box = self.__get_checking_box(lane_index)
         if checking_box is not None:
-            if not isLongNote:
+            if not checking_box.isLongNote:
                 self.__score_calc(
-                    self.__get_successful(self.checker_boxes_list[lane - 1].rect, checking_box.rect))
+                    self.__get_successful(self.checker_boxes_list[lane_index].rect, checking_box.rect))
                 checking_box.kill()
             else:
                 self.__score_calc(
-                    self.__get_successful(self.checker_boxes_list[lane - 1].rect, checking_box.rect))
-                self.isLongPressing[lane - 1] = True
+                    self.__get_successful(self.checker_boxes_list[lane_index].rect, checking_box.rect))
+                self.isLongPressing[lane_index] = True
                 self.__update_long_note()
-            print(
-                f"log: pressed d {self.note_in_lane[lane - 1][1][0] if len(self.note_in_lane[lane - 1][1]) > 0 else None}")
+            # print(
+            #     f"log: pressed d {self.note_in_lane[lane_index][1][0] if len(self.note_in_lane[lane_index][1]) > 0 else None}")
 
-    def __press_UP_method(self, lane):
-        checking_box, isLongNote = self.__get_checking_box(lane)
-        if checking_box is not None:
+    def __press_UP_method(self, lane_index):
+        checking_box = self.__get_checking_box(lane_index)
+        if checking_box is not None and checking_box.isLongNote:
             self.__score_calc(
-                self.__get_successful(self.checker_boxes_list[lane - 1].rect, checking_box.rect))
-            self.isLongPressing[lane - 1] = True
+                self.__get_successful(self.checker_boxes_list[lane_index].rect, checking_box.rect))
+            self.isLongPressing[lane_index] = False
             self.__update_long_note()
-            print(
-                f"log: pressed d {self.note_in_lane[lane - 1][1][0] if len(self.note_in_lane[lane - 1][1]) > 0 else None}")
+
+            lane_list = self.note_in_lane[lane_index][1]
+
+            # print(
+            #     f"log: pressed d {self.note_in_lane[lane_index][1][0] if len(self.note_in_lane[lane_index][1]) > 0 else None}")
 
 
     def run(self):
@@ -445,7 +446,6 @@ class GamePage(Screen, EngineConfig):
             self.__update_tempo()
             self.update_static()
             self.update_dynamic()
-            # self.__update_long_note()
 
             # Draw Edge line
             pygame.draw.line(self.screen, (27, 48, 91), (GAME_WIDTH_CENTER - 440, 0),
@@ -485,13 +485,13 @@ class GamePage(Screen, EngineConfig):
 
                     # Still not check
                     if event.key == pygame.K_d:
-                        self.__press_DOWN_method(1)
+                        self.__press_DOWN_method(0)
                     if event.key == pygame.K_f:
-                        self.__press_DOWN_method(2)
+                        self.__press_DOWN_method(1)
                     if event.key == pygame.K_j:
-                        self.__press_DOWN_method(3)
+                        self.__press_DOWN_method(2)
                     if event.key == pygame.K_k:
-                        self.__press_DOWN_method(4)
+                        self.__press_DOWN_method(3)
 
                     # Update long note color (Special Case)
                     self.__update_long_note()
@@ -500,18 +500,22 @@ class GamePage(Screen, EngineConfig):
                     if event.key == pygame.K_d:
                         self.isLongPressing[0] = False
                         self.__kill_long_note(0)
+                        self.__press_UP_method(0)
 
                     if event.key == pygame.K_f:
                         self.isLongPressing[1] = False
                         self.__kill_long_note(1)
+                        self.__press_UP_method(1)
 
                     if event.key == pygame.K_j:
                         self.isLongPressing[2] = False
                         self.__kill_long_note(2)
+                        self.__press_UP_method(2)
 
                     if event.key == pygame.K_k:
                         self.isLongPressing[3] = False
                         self.__kill_long_note(3)
+                        self.__press_UP_method(3)
 
                     # Update long note color (Special Case)
                     self.__update_long_note()

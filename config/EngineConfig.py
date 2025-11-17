@@ -35,6 +35,13 @@ class EngineConfig:
             print(f"Error: The file '{FILENAME}' contains invalid JSON syntax.")
             return None
 
+        try:
+            transparent_bg_image = pygame.image.load('assets/image/').convert_alpha()
+        except pygame.error as e:
+            print(f"Failed to load image: {e}")
+            # Handle error or use a fallback surface
+            transparent_bg_image = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
+            transparent_bg_image.fill((255, 0, 0, 128))  # Example fallback: semi-transparent red
 
     def play_song(self):
         pygame.mixer.music.set_volume(self.music_volume)
