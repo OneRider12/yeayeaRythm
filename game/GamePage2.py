@@ -1,5 +1,3 @@
-from typing import Any
-
 from config.FontConstant import *
 from config.PageConstant import *
 
