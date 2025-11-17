@@ -2,7 +2,7 @@ import pygame
 import sys
 
 from config.FontConstant import FONT_PATH
-from config.PageConstant import SCREEN_BACKGROUND, SCREEN_WIDTH_CENTER
+from config.PageConstant import SCREEN_BACKGROUND, SCREEN_WIDTH_CENTER, SCREEN_DIMENSION, SCREEN_HEIGHT_CENTER
 from util.Screen import Screen
 from util.Text import Text
 from itertools import cycle
@@ -20,7 +20,7 @@ class CreditsPage(Screen):
 
         __background = pygame.Color(13, 0, 30)
         __name = "Credits - YeaYeaRythm"
-        self.screen = self.setup(__background, __name)
+        self.screen = self.setup(__background, __name, True)
 
         self.clock = pygame.time.Clock()
         self.isRunning = True
@@ -35,15 +35,32 @@ class CreditsPage(Screen):
         self.button_font = pygame.font.Font(FONT_PATH, 55)
 
         # --- กล่องและปุ่ม ---
-        self.credit_box = pygame.Rect(350, 250, 500, 250)
+        self.credit_box = pygame.Rect(300, 225, 600, 300)
         self.home_button = ui.Button("HOME", (SCREEN_WIDTH_CENTER, 720))
-        self.button_rect = pygame.Rect(540, 650, 140, 60)
+        # self.button_rect = pygame.Rect(540, 650, 140, 60)
+
+        self.__load_image()
 
         self.credits = [
             "Watchara Wattanalaosomboon 6834453823",
             "Pattarapon Kitkamonsawet 6834444123",
             "Primrada Thitasomboon 6834438423"
         ]
+
+        self.credits_rect = self.credits_image.get_rect(center=(SCREEN_WIDTH_CENTER, SCREEN_HEIGHT_CENTER - 40))
+
+    def __load_image(self):
+        try:
+            # Load the image and preserve transparency (convert_alpha)
+            self.credits_image = pygame.image.load('assets/image/credits_image_t.png')
+
+            # # Scale it to the screen size (assuming it should fill the screen)
+            # self.credits_image = pygame.transform.scale(self.static_bg_image, )
+
+        except pygame.error as e:
+            print(f"Failed to load static background image: {e}")
+            self.credits_image = pygame.Surface(SCREEN_DIMENSION, pygame.SRCALPHA)
+            self.credits_image.fill((27, 48, 91, 255))
 
     def draw(self):
         self.bg_color = SCREEN_BACKGROUND
@@ -56,7 +73,7 @@ class CreditsPage(Screen):
         self.screen.blit(title, (600 - title.get_width() // 2, 50))
 
         # กล่องสีเทา
-        pygame.draw.rect(self.screen, (200, 200, 200), self.credit_box.move(0, -35))
+        # pygame.draw.rect(self.screen, (200, 200, 200), self.credit_box.move(0, -35))
 
         # รายชื่อ
         y = 510
@@ -64,25 +81,6 @@ class CreditsPage(Screen):
             txt = self.text_font.render(line, True, (255, 255, 255))
             self.screen.blit(txt, (600 - txt.get_width() // 2, y))
             y += 50
-
-        # ปุ่ม HOME
-        # pygame.draw.ellipse(self.screen, (240, 240, 240), self.button_rect)
-        # btn_text = self.button_font.render("HOME", True, (25, 25, 60))
-        # self.screen.blit(
-        #     btn_text,
-        #     (self.button_rect.centerx - btn_text.get_width() // 2,
-        #      self.button_rect.centery - btn_text.get_height() // 2)
-        # )
-        # offset_y = 40  # จำนวนพิกเซลที่อยากขยับลง
-        # moved_rect = self.button_rect.move(0, offset_y)
-        #
-        # pygame.draw.ellipse(self.screen, (240, 240, 240), moved_rect)
-        # btn_text = self.button_font.render("HOME", True, (25, 25, 60))
-        # self.screen.blit(
-        #     btn_text,
-        #     (moved_rect.centerx - btn_text.get_width() // 2,
-        #      moved_rect.centery - btn_text.get_height() // 2)
-        # )
 
         self.home_button.draw(self.screen)
 
@@ -99,9 +97,9 @@ class CreditsPage(Screen):
                     self.isRunning = False
                     return "start"
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    # if self.button_rect.collidepoint(event.pos):
-                    #     print("Back to HOME")
-                    #     self.isRunning = False
+                    if self.home_button.rect.collidepoint(event.pos):
+                        print("Back to HOME")
+                        self.isRunning = False
 
                     self.isRunning = False
                     return "start"
