@@ -1,24 +1,24 @@
 [
   {
-    "name": "SONG1",
+    "name": "BIRDS OF A FEATHER.",
     "desc": {
-      "name": "SONG1",
-      "artist": "IDK just me bro.",
+      "name": "BIRDS OF A FEATHER.",
+      "artist": "Billie Eilish",
       "bpm": 120,
       "difficulty": 1,
       "notes_sheet_dir": "assets/song_data/song01_notes_sheet.txt",
-      "song_dir" : "assets/song_mp3/ROSÉ & Bruno Mars - APT..mp3"
+      "song_dir" : "assets/song_mp3/BIRDS OF A FEATHER_Billie Eilish.mp3"
     }
   },
   {
-    "name": "SONG2",
+    "name": "Shinunoga E-Wa.",
     "desc": {
-      "name": "SONG2",
-      "artist": "IDK just me bro.",
-      "bpm": 160,
+      "name": "SShinunoga E-Wa.",
+      "artist": "Fujii Kaze",
+      "bpm": 130,
       "difficulty": 2,
       "notes_sheet_dir": "assets/song_data/song02_notes_sheet.txt",
-      "song_dir": "assets/song_mp3/"
+      "song_dir": "assets/song_mp3/Shinunoga E-Wa_Fujii Kaze.mp3"
     }
   },
   {
@@ -33,25 +33,25 @@
     }
   },
   {
-    "name": "SONG4",
+    "name": "Tokyo Drift.",
     "desc": {
-      "name": "SONG4",
-      "artist": "IDK just me bro.",
+      "name": "Tokyo Drift.",
+      "artist": "Teriyaki Boyz",
       "bpm": 160,
       "difficulty": 4,
       "notes_sheet_dir": "assets/song_data/song02_notes_sheet.txt",
-      "song_dir": "assets/song_mp3/"
+      "song_dir": "assets/song_mp3/Tokyo Drift_Teriyaki Boyz.mp3"
     }
   },
   {
-    "name": "SONG5",
+    "name": "มันต้องถอน.",
     "desc": {
-      "name": "SONG5",
-      "artist": "IDK just me bro.",
+      "name": "มันต้องถอน.",
+      "artist": "ปอยฝ้าย มาลัยพร",
       "bpm": 180,
       "difficulty": 4,
       "notes_sheet_dir": "assets/song_data/song02_notes_sheet.txt",
-      "song_dir": "assets/song_mp3/"
+      "song_dir": "assets/song_mp3/มันต้องถอน_ปอยฝ้าย.mp3"
     }
   }
 ]
