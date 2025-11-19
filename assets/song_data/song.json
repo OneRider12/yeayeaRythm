@@ -4,7 +4,7 @@
     "desc": {
       "name": "BIRDS OF A FEATHER.",
       "artist": "Billie Eilish",
-      "bpm": 120,
+      "bpm": 122,
       "difficulty": 1,
       "notes_sheet_dir": "assets/song_data/song01_notes_sheet.txt",
       "song_dir" : "assets/song_mp3/BIRDS OF A FEATHER_Billie Eilish.mp3"
@@ -15,7 +15,7 @@
     "desc": {
       "name": "Shinunoga E-Wa.",
       "artist": "Fujii Kaze",
-      "bpm": 130,
+      "bpm": 138,
       "difficulty": 2,
       "notes_sheet_dir": "assets/song_data/song02_notes_sheet.txt",
       "song_dir": "assets/song_mp3/Shinunoga E-Wa_Fujii Kaze.mp3"
@@ -26,7 +26,7 @@
     "desc": {
       "name": "APT.",
       "artist": "ROSÉ & Bruno Mars",
-      "bpm": 160,
+      "bpm": 120,
       "difficulty": 2,
       "notes_sheet_dir": "assets/song_data/song03_notes_sheet.txt",
       "song_dir" : "assets/song_mp3/ROSÉ & Bruno Mars - APT..mp3"
@@ -37,7 +37,7 @@
     "desc": {
       "name": "Tokyo Drift.",
       "artist": "Teriyaki Boyz",
-      "bpm": 160,
+      "bpm": 150,
       "difficulty": 4,
       "notes_sheet_dir": "assets/song_data/song04_notes_sheet.txt",
       "song_dir": "assets/song_mp3/Tokyo Drift_Teriyaki Boyz.mp3"
@@ -48,7 +48,7 @@
     "desc": {
       "name": "NewJeans.",
       "artist": "NewJeans",
-      "bpm": 134,
+      "bpm": 170,
       "difficulty": 1.8,
       "notes_sheet_dir": "assets/song_data/song05_notes_sheet.txt",
       "song_dir": "assets/song_mp3/Newjeans__Newjeans.mp3"

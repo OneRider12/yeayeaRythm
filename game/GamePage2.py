@@ -463,6 +463,8 @@ class GamePage(Screen, EngineConfig):
 
         waited = False
 
+        self.play_song()
+
         while self.isRunning:
             # Reset screen
             self.screen.fill(SCREEN_BACKGROUND)
@@ -497,11 +499,6 @@ class GamePage(Screen, EngineConfig):
                 if self.tick_delay_end_counter == self.tick_per_beat * 2:
 
                     self.end_game()
-
-            # Play song after 1-second delay
-            if self.tempo_counter > 1 and not waited:
-                self.play_song()
-                waited = True
 
             # Event checker_fx
             for event in pygame.event.get():
