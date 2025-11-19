@@ -50,8 +50,6 @@ UNIV_NOTE_DATA = lambda lane, size: (UNIV_NOTE_SIZE[size], BOX_NOTE_COLORS[lane]
 
 SCORE_SIZE = 80
 
-SPEED_OPTIMIZE = 10
-
 class GamePage(Screen, EngineConfig):
     def __init__(self, song_name):
         # Screen, GameEngine setup
@@ -61,7 +59,6 @@ class GamePage(Screen, EngineConfig):
         # Load song data
         self.song_data = self._load_song(song_name)  # as Dict
         self.leaderboard = self._load_score(song_name)
-        print(self.leaderboard)
         self.sheet_dir = self.song_data["notes_sheet_dir"]
         self.notes_sheets = self.__get_notes(self.sheet_dir)
 
@@ -142,17 +139,17 @@ class GamePage(Screen, EngineConfig):
 
         # Separate digit
         self.digit1 = Text('0', SCORE_SIZE, NORMAL_COLOR_LIGHT, self.screen,
-                           (SCORE_WIDTH_CENTER, SCREEN_HEIGHT_CENTER - 40 - 80 * 2 + 20 * 2 + 10))
+                           (SCORE_WIDTH_CENTER, SCREEN_HEIGHT_CENTER - 40 - 80 * 2 + 20 * 2 + 10), isDigit=True)
         self.digit2 = Text('0', SCORE_SIZE, NORMAL_COLOR_LIGHT, self.screen,
-                           (SCORE_WIDTH_CENTER, SCREEN_HEIGHT_CENTER - 40 - 80 - 20 - 10))
+                           (SCORE_WIDTH_CENTER, SCREEN_HEIGHT_CENTER - 40 - 80 - 20 - 10), isDigit=True)
         self.digit3 = Text('0', SCORE_SIZE, NORMAL_COLOR_LIGHT, self.screen,
-                           (SCORE_WIDTH_CENTER, SCREEN_HEIGHT_CENTER - 40 - 10))
+                           (SCORE_WIDTH_CENTER, SCREEN_HEIGHT_CENTER - 40 - 10), isDigit=True)
         self.digit4 = Text('0', SCORE_SIZE, NORMAL_COLOR_LIGHT, self.screen,
-                           (SCORE_WIDTH_CENTER, SCREEN_HEIGHT_CENTER + 40 + 10))
+                           (SCORE_WIDTH_CENTER, SCREEN_HEIGHT_CENTER + 40 + 10), isDigit=True)
         self.digit5 = Text('0', SCORE_SIZE, NORMAL_COLOR_LIGHT, self.screen,
-                           (SCORE_WIDTH_CENTER, SCREEN_HEIGHT_CENTER + 40 + 80 + 20 + 10))
+                           (SCORE_WIDTH_CENTER, SCREEN_HEIGHT_CENTER + 40 + 80 + 20 + 10), isDigit=True)
         self.digit6 = Text('0', SCORE_SIZE, NORMAL_COLOR_LIGHT, self.screen,
-                           (SCORE_WIDTH_CENTER, SCREEN_HEIGHT_CENTER + 40 + 80 * 2 + 20 * 2 + 10))
+                           (SCORE_WIDTH_CENTER, SCREEN_HEIGHT_CENTER + 40 + 80 * 2 + 20 * 2 + 10), isDigit=True)
 
         self.digits = [self.digit1, self.digit2, self.digit3, self.digit4, self.digit5, self.digit6]
         self.digit_group = pygame.sprite.Group()
@@ -358,10 +355,11 @@ class GamePage(Screen, EngineConfig):
 
     def end_game(self):
         dt = 100
+        int(self.score) if self.score > 100 else self.score
         self.end_popup = Box((560, 420), (59, 49, 73), SCREEN_CENTER)
         self.end_text = Text("ENDED", 60, (253, 252, 228), self.screen,
-                             (SCREEN_WIDTH_CENTER, SCREEN_HEIGHT_CENTER - 160))
-        self.score_text = Text(str(self.score), 100, (253, 252, 228), self.screen,
+                             (SCREEN_WIDTH_CENTER, SCREEN_HEIGHT_CENTER - 160), isDigit=True)
+        self.score_text = Text(str(), 100, (253, 252, 228), self.screen,
                                (SCREEN_WIDTH_CENTER, SCREEN_HEIGHT_CENTER))
         home_button = Button("Home", (SCREEN_WIDTH_CENTER, SCREEN_HEIGHT_CENTER + 160))
 
@@ -371,7 +369,7 @@ class GamePage(Screen, EngineConfig):
         self.ui.add(self.end_text, layer=502)
         self.ui.add(self.score_text, layer=503)
 
-        # self._update_score_lb(self.leaderboard)
+        self.__update_leaderboard()
 
         print("**ENDED**")
 
@@ -391,14 +389,6 @@ class GamePage(Screen, EngineConfig):
                         self.end_text.kill()
                         self.score_text.kill()
 
-                        # if not hasattr(self, '_score_saved'):
-                        #     self.save_final_score(
-                        #         song_id=self.song_id,
-                        #         username=self.username,
-                        #         final_score=int(self.score)
-                        #     )
-                        #     self._score_saved = True  # Mark score as saved
-
                         self.isEnded = False
                         return "quit"
                 if event.type == pygame.MOUSEBUTTONDOWN:
@@ -410,18 +400,17 @@ class GamePage(Screen, EngineConfig):
             pygame.display.flip()
             self.isRunning = False
 
-    # def __update_leaderboard(self):
-    #     tscore = 0
-    #     for name, score in self.leaderboard.items():
-    #         if self.score > score:
-    #             score = self.score
-    #             tscore = score
-    #         if tscore > score:
-    #             score = tscore
-    #             tscore =
-    #     self.update_score_json()
-
-
+    def __update_leaderboard(self):
+        score_list = [s for s in self.leaderboard.values()]
+        score_list.append(int(self.score))
+        score_list.sort(reverse=True)
+        score_list.pop(-1)
+        i = 0
+        for n in self.leaderboard:
+            self.leaderboard[n] = score_list[i]
+            i += 1
+        print(self.leaderboard)
+        self._update_score_json()
 
     # Pressing >1 box flow, PRESSDOWN -> __update -> PRESSUP -> kill()
     def __press_DOWN_method(self, lane_index):
@@ -455,13 +444,17 @@ class GamePage(Screen, EngineConfig):
 
     def run(self):
 
+        # Testing
+        self.score = 9999
+        self.end_game()
+
         # Play Song
         if game_settings["music"]:
             self.music_volume = 0.8
         else:
             self.music_volume = 0
 
-        waited = False
+        self.play_song()
 
         while self.isRunning:
             # Reset screen
@@ -497,11 +490,6 @@ class GamePage(Screen, EngineConfig):
                 if self.tick_delay_end_counter == self.tick_per_beat * 2:
 
                     self.end_game()
-
-            # Play song after 1-second delay
-            if self.tempo_counter > 1 and not waited:
-                self.play_song()
-                waited = True
 
             # Event checker_fx
             for event in pygame.event.get():

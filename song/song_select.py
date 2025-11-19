@@ -48,11 +48,12 @@ def __draw_background_image(screen):
 def run(screen, dt):
     ui.init_fonts()
 
+    run.leaderboard_data = load_data(SCORE_DIR)
+
     if not hasattr(run, "_inited"):
         run._inited = True
 
         run.leaderboard_data = load_data(SCORE_DIR)
-        print(run.leaderboard_data)
 
         # ---------- ฟอนต์เฉพาะหน้าเลือกเพลง ----------
         run.FONT_TITLE_SMALL = pygame.font.Font(ui.FONT_PATH, 60)
