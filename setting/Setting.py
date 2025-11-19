@@ -154,7 +154,7 @@ def run(screen, dt):
 
     # ---- Draw ----
     screen.fill(run.BG_COLOR)
-    screen.blit(draw_background_image())
+    draw_background_image(screen)
 
     # title
     title = run.FONT_TITLE.render("SETTING", False, run.WHITE)
