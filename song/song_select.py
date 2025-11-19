@@ -60,14 +60,6 @@ def run(screen, dt):
         run.play_button = ui.Button("PLAY", (925, 600), size=(260, 70), radius=35)
         run.home_button = ui.Button("HOME", (925, 700), size=(260, 70), radius=35)
 
-        # ---------- ข้อมูล Leaderboard 5 ชุด ----------
-        # run.leaderboards = [
-        #     [("AAA", "100000"), ("BBB", "80000"), ("CCC", "60000")],
-        #     [("DDD", "90000"),  ("EEE", "70000"), ("FFF", "50000")],
-        #     [("GGG", "120000"), ("HHH", "90000"), ("III", "65000")],
-        #     [("JJJ", "150000"), ("KKK", "110000"), ("LLL", "90000")],
-        #     [("MMM", "200000"), ("NNN", "150000"), ("OOO", "120000")],
-        # ]
         run.active_song_index = 0  # default
 
         # สีกล่อง leaderboard
