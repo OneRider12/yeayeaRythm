@@ -452,8 +452,6 @@ class GamePage(Screen, EngineConfig):
 
         self.play_song()
 
-        self.play_song()
-
         while self.isRunning:
             # Reset screen
             self.screen.fill(SCREEN_BACKGROUND)
