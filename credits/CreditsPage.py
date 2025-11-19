@@ -25,17 +25,14 @@ class CreditsPage(Screen):
         self.clock = pygame.time.Clock()
         self.isRunning = True
 
-        # --- โหลด GIF พื้นหลัง ---
-        # self.frames = self.load_gif_frames("assets/gif/8904fb777b93efc7bd4b8aa22482672a.gif")
-        # self.frame_cycle = cycle(self.frames)
-
         # --- ฟอนต์ ---
         self.title_font = pygame.font.Font(FONT_PATH, 100)
         self.text_font = pygame.font.Font(FONT_PATH, 35)
         self.button_font = pygame.font.Font(FONT_PATH, 55)
 
-        # --- กล่องและปุ่ม ---
-        self.credit_box = pygame.Rect(300, 225, 600, 300)
+        # --- กล่องแบบภาพแทน rect ---
+        self.credit_box_img = pygame.image.load("assets/groupphoto/image.png").convert_alpha()
+        self.credit_box_rect = self.credit_box_img.get_rect(center=(600, 330))
         self.home_button = ui.Button("HOME", (SCREEN_WIDTH_CENTER, 720))
         # self.button_rect = pygame.Rect(540, 650, 140, 60)
 
@@ -72,8 +69,8 @@ class CreditsPage(Screen):
         title = self.title_font.render("CREDIT", True, (255, 255, 255))
         self.screen.blit(title, (600 - title.get_width() // 2, 50))
 
-        # กล่องสีเทา
-        # pygame.draw.rect(self.screen, (200, 200, 200), self.credit_box.move(0, -35))
+        # ภาพ
+        self.screen.blit(self.credit_box_img, self.credit_box_rect)
 
         # รายชื่อ
         y = 510
@@ -97,10 +94,6 @@ class CreditsPage(Screen):
                     self.isRunning = False
                     return "start"
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    home_button_rect = self.home_button.rect()
-                    if home_button_rect.collidepoint(event.pos):
-                        print("Back to HOME")
-                        self.isRunning = False
 
                     self.isRunning = False
                     return "start"
