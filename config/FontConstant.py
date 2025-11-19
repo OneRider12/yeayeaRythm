@@ -1,8 +1,8 @@
 # FONT CONSTANTS
 # PATH
 
-# FONT_PATH = "assets/fonts/PixelifySans-VariableFont_wght.ttf"
-FONT_PATH = "assets/fonts/Monocraft.ttf"
+FONT_PATH = "assets/fonts/PixelifySans-VariableFont_wght.ttf"
+FONT_DIGIT_PATH = "assets/fonts/Monocraft.ttf"
 
 # SIZE
 

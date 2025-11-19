@@ -4,7 +4,7 @@ from config.FontConfig import FontConfig
 from util.Gradient import Gradient
 
 class Text(pygame.sprite.Sprite):
-    def __init__(self, text: str, size: int, color, screen: pygame.Surface, position):
+    def __init__(self, text: str, size: int, color, screen: pygame.Surface, position, isDigit=False):
         super().__init__()
         self.text = text
         self.color = color
@@ -17,7 +17,7 @@ class Text(pygame.sprite.Sprite):
         self.text_surface = None
         self.text_dimension = None
 
-        self.font = FontConfig(size)
+        self.font = FontConfig(size, isDigit)
 
         self.create_text_surface()
 
