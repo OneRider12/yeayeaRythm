@@ -359,9 +359,9 @@ class GamePage(Screen, EngineConfig):
         self.end_popup = Box((560, 420), (59, 49, 73), SCREEN_CENTER)
         self.end_text = Text("ENDED", 60, (253, 252, 228), self.screen,
                              (SCREEN_WIDTH_CENTER, SCREEN_HEIGHT_CENTER - 160), isDigit=True)
-        self.score_text = Text(str(), 100, (253, 252, 228), self.screen,
+        self.score_text = Text(str(int(self.score)), 100, (253, 252, 228), self.screen,
                                (SCREEN_WIDTH_CENTER, SCREEN_HEIGHT_CENTER))
-        home_button = Button("Home", (SCREEN_WIDTH_CENTER, SCREEN_HEIGHT_CENTER + 160))
+        home_button = Button("Home", (SCREEN_WIDTH_CENTER, SCREEN_HEIGHT_CENTER + 120))
 
         ending_group = pygame.sprite.Group()
         ending_group.add(self.end_popup, self.end_text, self.score_text)
@@ -444,10 +444,6 @@ class GamePage(Screen, EngineConfig):
 
     def run(self):
 
-        # Testing
-        self.score = 9999
-        self.end_game()
-
         # Play Song
         if game_settings["music"]:
             self.music_volume = 0.8
@@ -489,8 +485,8 @@ class GamePage(Screen, EngineConfig):
             # Ending game with 2 seconds delay
             if self.isEnded:
                 self.tick_delay_end_counter += 1
-                if self.tick_delay_end_counter == self.tick_per_beat * 2:
-
+                if self.tick_delay_end_counter == int(self.tick_per_beat * 2):
+                    self.isRunning = False
                     self.end_game()
 
             # Event checker_fx
