@@ -12,7 +12,7 @@ class HomePage(Screen, EngineConfig):
         Screen().__init__()
         EngineConfig.__init__(self)
 
-        self.screen = self.setup(SCREEN_BACKGROUND, HOME_TITLE)
+        self.screen = self.setup(SCREEN_BACKGROUND, HOME_TITLE, False)
 
         self.box = Box((100, 120), (255, 255, 100))
 

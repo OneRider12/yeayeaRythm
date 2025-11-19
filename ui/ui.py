@@ -2,6 +2,7 @@ import pygame
 
 # --- Global config for UI ---
 FONT_PATH = "assets/fonts/PixelifySans-VariableFont_wght.ttf"
+# FONT_PATH = "assets/fonts/Monocraft.ttf"
 
 # Colors
 BG_COLOR        = (27, 48, 91)

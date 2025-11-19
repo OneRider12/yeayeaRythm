@@ -1,9 +1,31 @@
 import pygame, sys
 import ui.ui as ui  # ใช้ UI กลาง
-from config.PageConstant import SCREEN_CENTER
+from config.PageConstant import SCREEN_CENTER, SCREEN_DIMENSION
 from config.game_config import *
 
 WIDTH, HEIGHT = 1200, 800
+
+
+def draw_background_image():
+    """Loads the static background image with alpha channel."""
+    try:
+        # Load the image and preserve transparency (convert_alpha)
+        static_bg_image = pygame.image.load('assets/image/background_image.png').convert_alpha()
+
+        # Scale it to the screen size (assuming it should fill the screen)
+        static_bg_image = pygame.transform.scale(static_bg_image, SCREEN_DIMENSION)
+
+        # Optional: Set a global transparency if needed (e.g., 50% opacity)
+        static_bg_image.set_alpha(128)
+
+    except pygame.error as e:
+        print(f"Failed to load static background image: {e}")
+        # Fallback surface with semi-transparent color
+        static_bg_image = pygame.Surface(SCREEN_DIMENSION, pygame.SRCALPHA)
+        static_bg_image.fill((27, 48, 91, 255))
+
+    return static_bg_image
+
 
 def run(screen, dt):
     ui.init_fonts()
@@ -132,6 +154,7 @@ def run(screen, dt):
 
     # ---- Draw ----
     screen.fill(run.BG_COLOR)
+    screen.blit(draw_background_image())
 
     # title
     title = run.FONT_TITLE.render("SETTING", False, run.WHITE)
