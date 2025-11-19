@@ -3,32 +3,32 @@
     "song": "BIRDS OF A FEATHER.",
     "leaderboard": {
       "AAA": 9999,
-      "BBB": 1,
-      "CCC": 1
+      "BBB": 9999,
+      "CCC": 9999
     }
   },
   {
     "song": "Shinunoga E-Wa.",
     "leaderboard": {
       "DDD": 9999,
-      "EEE": 1000,
-      "FFF": 100
+      "EEE": 9999,
+      "FFF": 9999
     }
   },
   {
     "song": "APT.",
     "leaderboard": {
       "GGG": 9999,
-      "HHH": 1000,
-      "III": 100
+      "HHH": 9999,
+      "III": 1000
     }
   },
   {
     "song": "Tokyo Drift.",
     "leaderboard": {
       "JJJ": 9999,
-      "KKK": 1000,
-      "LLL": 100
+      "KKK": 9999,
+      "LLL": 1000
     }
   },
   {
@@ -36,7 +36,7 @@
     "leaderboard": {
       "MMM": 99999,
       "NNN": 1000,
-      "OOO": 100
+      "OOO": 196
     }
   }
 ]
