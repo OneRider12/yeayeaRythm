@@ -24,7 +24,7 @@ class GamePage(Screen, EngineConfig):
         self.notes_sheets = self.__get_notes(sheet_dir)
 
         # Setup screen
-        self.screen = self.setup(SCREEN_BACKGROUND, self.song_data.get("name") + "- Gameplay")
+        self.screen = self.setup(SCREEN_BACKGROUND, self.song_data.get("name") + "- Gameplay", False)
 
         # Counter (calibrate with song data)
         self.bpm = self.song_data.get("bpm")

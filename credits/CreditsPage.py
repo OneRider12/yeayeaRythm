@@ -2,7 +2,7 @@ import pygame
 import sys
 
 from config.FontConstant import FONT_PATH
-from config.PageConstant import SCREEN_BACKGROUND, SCREEN_WIDTH_CENTER
+from config.PageConstant import SCREEN_BACKGROUND, SCREEN_WIDTH_CENTER, SCREEN_DIMENSION, SCREEN_HEIGHT_CENTER
 from util.Screen import Screen
 from util.Text import Text
 from itertools import cycle
@@ -20,7 +20,7 @@ class CreditsPage(Screen):
 
         __background = pygame.Color(13, 0, 30)
         __name = "Credits - YeaYeaRythm"
-        self.screen = self.setup(__background, __name)
+        self.screen = self.setup(__background, __name, True)
 
         self.clock = pygame.time.Clock()
         self.isRunning = True
@@ -34,13 +34,30 @@ class CreditsPage(Screen):
         self.credit_box_img = pygame.image.load("assets/groupphoto/image.png").convert_alpha()
         self.credit_box_rect = self.credit_box_img.get_rect(center=(600, 330))
         self.home_button = ui.Button("HOME", (SCREEN_WIDTH_CENTER, 720))
-        self.button_rect = pygame.Rect(540, 650, 140, 60)
+        # self.button_rect = pygame.Rect(540, 650, 140, 60)
+
+        self.__load_image()
 
         self.credits = [
             "Watchara Wattanalaosomboon 6834453823",
             "Pattarapon Kitkamonsawet 6834444123",
             "Primrada Thitasomboon 6834438423"
         ]
+
+        self.credits_rect = self.credits_image.get_rect(center=(SCREEN_WIDTH_CENTER, SCREEN_HEIGHT_CENTER - 40))
+
+    def __load_image(self):
+        try:
+            # Load the image and preserve transparency (convert_alpha)
+            self.credits_image = pygame.image.load('assets/image/credits_image_t.png')
+
+            # # Scale it to the screen size (assuming it should fill the screen)
+            # self.credits_image = pygame.transform.scale(self.static_bg_image, )
+
+        except pygame.error as e:
+            print(f"Failed to load static background image: {e}")
+            self.credits_image = pygame.Surface(SCREEN_DIMENSION, pygame.SRCALPHA)
+            self.credits_image.fill((27, 48, 91, 255))
 
     def draw(self):
         self.bg_color = SCREEN_BACKGROUND

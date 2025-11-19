@@ -50,6 +50,7 @@ UNIV_NOTE_DATA = lambda lane, size: (UNIV_NOTE_SIZE[size], BOX_NOTE_COLORS[lane]
 
 SCORE_SIZE = 80
 
+SPEED_OPTIMIZE = 10
 
 class GamePage(Screen, EngineConfig):
     def __init__(self, song_name):
@@ -58,19 +59,21 @@ class GamePage(Screen, EngineConfig):
         EngineConfig.__init__(self)
 
         # Load song data
-        self.song_data = self._load(song_name)  # as Dict
+        self.song_data = self._load_song(song_name)  # as Dict
+        self.leaderboard = self._load_score(song_name)
+        print(self.leaderboard)
         self.sheet_dir = self.song_data["notes_sheet_dir"]
         self.notes_sheets = self.__get_notes(self.sheet_dir)
 
         # Setup screen
-        self.screen = self.setup(SCREEN_BACKGROUND, self.song_data["name"] + "- Gameplay")
+        self.screen = self.setup(SCREEN_BACKGROUND, self.song_data["name"] + "- Gameplay", False)
 
         # Counter (calibrate with song data)
         self.bpm = self.song_data["bpm"]
-        self.tick_base = 120
-        self.tick_multi = self.bpm / 120
+        self.tick_base = 100
+        self.tick_multi = self.bpm / self.tick_base
 
-        self.tick_per_beat = 120 * self.tick_multi
+        self.tick_per_beat = self.tick_base * self.tick_multi
         self.tick_counter = 0
         self.tempo_counter = 0
         self.tick_delay_end_counter = 0
@@ -221,6 +224,7 @@ class GamePage(Screen, EngineConfig):
                 note = Box(*NOTE_BLANK)
 
             note.vector = (0, 1 * self.tick_multi)
+            # note.vector = (0, 1 / 100)
             note_group.add(note)
             self.note_in_lane[n][1].append(note)
 
@@ -367,6 +371,8 @@ class GamePage(Screen, EngineConfig):
         self.ui.add(self.end_text, layer=502)
         self.ui.add(self.score_text, layer=503)
 
+        # self._update_score_lb(self.leaderboard)
+
         print("**ENDED**")
 
         while self.isEnded:
@@ -385,6 +391,14 @@ class GamePage(Screen, EngineConfig):
                         self.end_text.kill()
                         self.score_text.kill()
 
+                        # if not hasattr(self, '_score_saved'):
+                        #     self.save_final_score(
+                        #         song_id=self.song_id,
+                        #         username=self.username,
+                        #         final_score=int(self.score)
+                        #     )
+                        #     self._score_saved = True  # Mark score as saved
+
                         self.isEnded = False
                         return "quit"
                 if event.type == pygame.MOUSEBUTTONDOWN:
@@ -395,6 +409,19 @@ class GamePage(Screen, EngineConfig):
 
             pygame.display.flip()
             self.isRunning = False
+
+    # def __update_leaderboard(self):
+    #     tscore = 0
+    #     for name, score in self.leaderboard.items():
+    #         if self.score > score:
+    #             score = self.score
+    #             tscore = score
+    #         if tscore > score:
+    #             score = tscore
+    #             tscore =
+    #     self.update_score_json()
+
+
 
     # Pressing >1 box flow, PRESSDOWN -> __update -> PRESSUP -> kill()
     def __press_DOWN_method(self, lane_index):
@@ -434,11 +461,12 @@ class GamePage(Screen, EngineConfig):
         else:
             self.music_volume = 0
 
-        # self.play_song()
+        waited = False
 
         while self.isRunning:
             # Reset screen
             self.screen.fill(SCREEN_BACKGROUND)
+            self.draw_background()
 
             # Update state
             self.__update_tempo()
@@ -467,7 +495,13 @@ class GamePage(Screen, EngineConfig):
             if self.isEnded:
                 self.tick_delay_end_counter += 1
                 if self.tick_delay_end_counter == self.tick_per_beat * 2:
+
                     self.end_game()
+
+            # Play song after 1-second delay
+            if self.tempo_counter > 1 and not waited:
+                self.play_song()
+                waited = True
 
             # Event checker_fx
             for event in pygame.event.get():
@@ -521,11 +555,15 @@ class GamePage(Screen, EngineConfig):
             # self.score_counter_text.update_text(int(self.score))
             # print("log: isPressing:", self.isPressing)
 
-            self.clock.tick(self.tick_base)
+            self.clock.tick(self.tick_per_beat)
             pygame.display.flip()
+
+        if (not self.isRunning and not self.isPause) or self.isEnded:
+            self.stop_song()
 
 
 def run(song_name):
+    print('game_instance!!!')
     game_instance = GamePage(song_name)
     game_instance.run()
     return "song_select"
