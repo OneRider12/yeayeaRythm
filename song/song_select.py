@@ -48,11 +48,11 @@ def run(screen, dt):
         run.song_name = ("SONG1", "SONG2", "APT.", "SONG4", "SONG5")
 
         run.song_buttons = [
-            SongButton("Song 1", 1, (song_center_x, first_y + 0 * gap_y)),
-            SongButton("Song 2", 1, (song_center_x, first_y + 1 * gap_y)),
+            SongButton("BIRDS OF A FEATHER", 1, (song_center_x, first_y + 0 * gap_y)),
+            SongButton("SHINUNOGA E_WA", 1, (song_center_x, first_y + 1 * gap_y)),
             SongButton("APT.", 2, (song_center_x, first_y + 2 * gap_y)),
-            SongButton("Song 4", 3, (song_center_x, first_y + 3 * gap_y)),
-            SongButton("Song 5", 3, (song_center_x, first_y + 4 * gap_y)),
+            SongButton("TOKYO DRIFT", 3, (song_center_x, first_y + 3 * gap_y)),
+            SongButton("MUN TONG THON", 3, (song_center_x, first_y + 4 * gap_y)),
         ]
 
         # ---------- ปุ่ม PLAY / HOME ด้านขวาล่าง ----------

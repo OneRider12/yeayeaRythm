@@ -104,11 +104,11 @@ def run(screen, dt):
 
         # create once
         run.rows = [
-            SettingRow("MV Background", y=250, switch_default=game_settings["mv"], callback=config_mv),
-            SettingRow("Sound",         y=340, switch_default=game_settings["music"], callback=config_music),
+            # SettingRow("MV Background", y=250, switch_default=game_settings["mv"], callback=config_mv),
+            SettingRow("Music",         y=250, switch_default=game_settings["music"], callback=config_music),
         ]
         run.buttons = [
-            ui.Button("BACK", (WIDTH // 2, 550)),
+            ui.Button("BACK", (WIDTH // 2, 650)),
         ]
 
     # ---- Event loop ----
