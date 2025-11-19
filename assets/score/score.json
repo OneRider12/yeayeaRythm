@@ -2,41 +2,41 @@
   {
     "song": "BIRDS OF A FEATHER.",
     "leaderboard": {
-      "AAA": 9999,
-      "BBB": 1,
-      "CCC": 1
+      "Player1": 0,
+      "Player2": 0,
+      "Player3": 0
     }
   },
   {
     "song": "Shinunoga E-Wa.",
     "leaderboard": {
-      "DDD": 9999,
-      "EEE": 1000,
-      "FFF": 100
+      "Player1": 0,
+      "Player2": 0,
+      "Player3": 0
     }
   },
   {
     "song": "APT.",
     "leaderboard": {
-      "GGG": 9999,
-      "HHH": 1000,
-      "III": 100
+      "Player1": 0,
+      "Player2": 0,
+      "Player3": 0
     }
   },
   {
     "song": "Tokyo Drift.",
     "leaderboard": {
-      "JJJ": 9999,
-      "KKK": 1000,
-      "LLL": 100
+      "Player1": 0,
+      "Player2": 0,
+      "Player3": 0
     }
   },
   {
     "song": "NewJeans.",
     "leaderboard": {
-      "MMM": 99999,
-      "NNN": 1000,
-      "OOO": 100
+      "Player1": 0,
+      "Player2": 0,
+      "Player3": 0
     }
   }
 ]
