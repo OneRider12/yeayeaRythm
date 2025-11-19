@@ -1,5 +1,6 @@
 import pygame, sys, json
 import ui.ui as ui   #จาก ui.py
+from config.PageConstant import SCREEN_DIMENSION
 from config.song_dir import *
 from game.GamePage2 import GamePage
 
@@ -21,6 +22,27 @@ def load_data(filename):
     except json.JSONDecodeError:
         print(f"Error: The file '{filename}' contains invalid JSON syntax.")
         return None
+
+def __draw_background_image(screen):
+    """Loads the static background image with alpha channel."""
+    try:
+        # Load the image and preserve transparency (convert_alpha)
+        static_bg_image = pygame.image.load('assets/image/background_image.png').convert_alpha()
+
+        # Scale it to the screen size (assuming it should fill the screen)
+        static_bg_image = pygame.transform.scale(static_bg_image, SCREEN_DIMENSION)
+
+        # Optional: Set a global transparency if needed (e.g., 50% opacity)
+        static_bg_image.set_alpha(128)
+
+    except pygame.error as e:
+        print(f"Failed to load static background image: {e}")
+        # Fallback surface with semi-transparent color
+        static_bg_image = pygame.Surface(SCREEN_DIMENSION, pygame.SRCALPHA)
+        static_bg_image.fill((27, 48, 91, 255))
+
+    screen.blit(static_bg_image, (0, 0))
+
 
 
 def run(screen, dt):
@@ -96,6 +118,7 @@ def run(screen, dt):
 
     # ---------- Draw ----------
     screen.fill(ui.BG_COLOR)
+    __draw_background_image(screen)
 
     # หัวข้อ Songs
     songs_title = run.FONT_TITLE_SMALL.render("Songs", True, ui.WHITE)
