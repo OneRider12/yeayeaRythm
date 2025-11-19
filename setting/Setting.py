@@ -5,8 +5,7 @@ from config.game_config import *
 
 WIDTH, HEIGHT = 1200, 800
 
-
-def draw_background_image():
+def __draw_background_image(screen):
     """Loads the static background image with alpha channel."""
     try:
         # Load the image and preserve transparency (convert_alpha)
@@ -24,7 +23,7 @@ def draw_background_image():
         static_bg_image = pygame.Surface(SCREEN_DIMENSION, pygame.SRCALPHA)
         static_bg_image.fill((27, 48, 91, 255))
 
-    return static_bg_image
+    screen.blit(static_bg_image, (0, 0))
 
 
 def run(screen, dt):
@@ -126,11 +125,11 @@ def run(screen, dt):
 
         # create once
         run.rows = [
-            SettingRow("MV Background", y=250, switch_default=game_settings["mv"], callback=config_mv),
-            SettingRow("Sound",         y=340, switch_default=game_settings["music"], callback=config_music),
+            # SettingRow("MV Background", y=250, switch_default=game_settings["mv"], callback=config_mv),
+            SettingRow("Music",         y=250, switch_default=game_settings["music"], callback=config_music),
         ]
         run.buttons = [
-            ui.Button("BACK", (WIDTH // 2, 550)),
+            ui.Button("BACK", (WIDTH // 2, 650)),
         ]
 
     # ---- Event loop ----
@@ -154,7 +153,7 @@ def run(screen, dt):
 
     # ---- Draw ----
     screen.fill(run.BG_COLOR)
-    screen.blit(draw_background_image())
+    __draw_background_image(screen)
 
     # title
     title = run.FONT_TITLE.render("SETTING", False, run.WHITE)
