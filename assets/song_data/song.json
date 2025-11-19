@@ -4,7 +4,7 @@
     "desc": {
       "name": "BIRDS OF A FEATHER.",
       "artist": "Billie Eilish",
-      "bpm": 120,
+      "bpm": 105,
       "difficulty": 1,
       "notes_sheet_dir": "assets/song_data/song01_notes_sheet.txt",
       "song_dir" : "assets/song_mp3/BIRDS OF A FEATHER_Billie Eilish.mp3"
@@ -15,7 +15,7 @@
     "desc": {
       "name": "Shinunoga E-Wa.",
       "artist": "Fujii Kaze",
-      "bpm": 130,
+      "bpm": 158,
       "difficulty": 2,
       "notes_sheet_dir": "assets/song_data/song02_notes_sheet.txt",
       "song_dir": "assets/song_mp3/Shinunoga E-Wa_Fujii Kaze.mp3"
