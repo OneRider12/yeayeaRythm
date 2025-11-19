@@ -360,7 +360,7 @@ class GamePage(Screen, EngineConfig):
         self.end_text = Text("ENDED", 60, (253, 252, 228), self.screen,
                              (SCREEN_WIDTH_CENTER, SCREEN_HEIGHT_CENTER - 160), isDigit=True)
         self.score_text = Text(str(int(self.score)), 100, (253, 252, 228), self.screen,
-                               (SCREEN_WIDTH_CENTER, SCREEN_HEIGHT_CENTER))
+                               (SCREEN_WIDTH_CENTER, SCREEN_HEIGHT_CENTER - 10), isDigit=True)
         home_button = Button("Home", (SCREEN_WIDTH_CENTER, SCREEN_HEIGHT_CENTER + 120))
 
         ending_group = pygame.sprite.Group()
