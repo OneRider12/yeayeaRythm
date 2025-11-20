@@ -1,0 +1,38 @@
+# FONT CONSTANTS
+# PATH
+
+FONT_PATH = "assets/fonts/PixelifySans-VariableFont_wght.ttf"
+FONT_DIGIT_PATH = "assets/fonts/Monocraft.ttf"
+
+# SIZE
+
+HEADER80 = 80 # page header
+HEADER48 = 48 #
+HEADER36 = 36 #
+
+NORMAL40 = 40 #
+NORMAL32 = 32 # credits name
+NORMAL28 = 28 # in-settings, song name, leaderboard name
+NORMAL24 = 24 # score
+
+BUTTON40 = 40 # general button
+
+# COLOR
+HEADER_GRADIENT = {
+    0.0: (191, 191, 191),  # BFBFBF (Start)
+    0.5: (255, 254, 224),  # FFFEE0 (Middle)
+    1.0: (255, 255, 255)   # FFFFFF (End)
+}
+
+NORMAL_COLOR_DARK = (27, 48, 91)
+BUTTON_COLOR_DARK = (27, 48, 91)
+
+NORMAL_COLOR_LIGHT = (255, 254, 224)
+
+# GAME
+GAME_SCORE_HEADING_TEXT = "score"
+GAME_SCORE_HEADING_MARGIN = 154
+GAME_SCORE_HEADING_COLOR = NORMAL_COLOR_DARK
+
+GAME_SCORE_COUNTER_COORD = (1056.5, 120)
+GAME_SCORE_COUNTER = NORMAL_COLOR_LIGHT

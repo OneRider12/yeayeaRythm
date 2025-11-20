@@ -1,0 +1,57 @@
+[
+  {
+    "name": "BIRDS OF A FEATHER.",
+    "desc": {
+      "name": "BIRDS OF A FEATHER.",
+      "artist": "Billie Eilish",
+      "bpm": 122,
+      "difficulty": 1,
+      "notes_sheet_dir": "assets/song_data/song01_notes_sheet.txt",
+      "song_dir" : "assets/song_mp3/BIRDS OF A FEATHER_Billie Eilish.mp3"
+    }
+  },
+  {
+    "name": "Shinunoga E-Wa.",
+    "desc": {
+      "name": "Shinunoga E-Wa.",
+      "artist": "Fujii Kaze",
+      "bpm": 138,
+      "difficulty": 2,
+      "notes_sheet_dir": "assets/song_data/song02_notes_sheet.txt",
+      "song_dir": "assets/song_mp3/Shinunoga E-Wa_Fujii Kaze.mp3"
+    }
+  },
+  {
+    "name": "APT.",
+    "desc": {
+      "name": "APT.",
+      "artist": "ROSÉ & Bruno Mars",
+      "bpm": 120,
+      "difficulty": 2,
+      "notes_sheet_dir": "assets/song_data/song03_notes_sheet.txt",
+      "song_dir" : "assets/song_mp3/ROSÉ & Bruno Mars - APT..mp3"
+    }
+  },
+  {
+    "name": "Tokyo Drift.",
+    "desc": {
+      "name": "Tokyo Drift.",
+      "artist": "Teriyaki Boyz",
+      "bpm": 150,
+      "difficulty": 4,
+      "notes_sheet_dir": "assets/song_data/song04_notes_sheet.txt",
+      "song_dir": "assets/song_mp3/Tokyo Drift_Teriyaki Boyz.mp3"
+    }
+  },
+  {
+    "name": "NewJeans.",
+    "desc": {
+      "name": "NewJeans.",
+      "artist": "NewJeans",
+      "bpm": 170,
+      "difficulty": 1.8,
+      "notes_sheet_dir": "assets/song_data/song05_notes_sheet.txt",
+      "song_dir": "assets/song_mp3/Newjeans__Newjeans.mp3"
+    }
+  }
+]

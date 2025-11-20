@@ -1,0 +1,217 @@
+import pygame, sys, json
+import ui.ui as ui   #จาก ui.py
+from config.PageConstant import SCREEN_DIMENSION
+from config.song_dir import *
+from game.GamePage2 import GamePage
+
+WIDTH, HEIGHT = 1200, 800
+SCORE_DIR = "assets/score/score.json"
+
+def load_data(filename):
+    try:
+        # Use 'with open' to open the file for reading ('r')
+        with open(filename, 'r', encoding='utf-8') as file:
+            # The json.load() function reads the file content,
+            # parses the JSON structure, and returns a Python dictionary/list.
+            data = json.load(file)
+            return data
+
+    except FileNotFoundError:
+        print(f"Error: The file '{filename}' was not found.")
+        return None
+    except json.JSONDecodeError:
+        print(f"Error: The file '{filename}' contains invalid JSON syntax.")
+        return None
+
+def __draw_background_image(screen):
+    """Loads the static background image with alpha channel."""
+    try:
+        # Load the image and preserve transparency (convert_alpha)
+        static_bg_image = pygame.image.load('assets/image/background_image.png').convert_alpha()
+
+        # Scale it to the screen size (assuming it should fill the screen)
+        static_bg_image = pygame.transform.scale(static_bg_image, SCREEN_DIMENSION)
+
+        # Optional: Set a global transparency if needed (e.g., 50% opacity)
+        static_bg_image.set_alpha(128)
+
+    except pygame.error as e:
+        print(f"Failed to load static background image: {e}")
+        # Fallback surface with semi-transparent color
+        static_bg_image = pygame.Surface(SCREEN_DIMENSION, pygame.SRCALPHA)
+        static_bg_image.fill((27, 48, 91, 255))
+
+    screen.blit(static_bg_image, (0, 0))
+
+
+
+def run(screen, dt):
+    ui.init_fonts()
+
+    run.leaderboard_data = load_data(SCORE_DIR)
+
+    if not hasattr(run, "_inited"):
+        run._inited = True
+
+        run.leaderboard_data = load_data(SCORE_DIR)
+
+        # ---------- ฟอนต์เฉพาะหน้าเลือกเพลง ----------
+        run.FONT_TITLE_SMALL = pygame.font.Font(ui.FONT_PATH, 60)
+        run.FONT_LABEL       = pygame.font.Font(ui.FONT_PATH, 25)
+        run.player       = pygame.font.Font(ui.FONT_PATH, 20)
+
+        # ---------- คลาสปุ่มเพลง ----------
+        run.SongButton = SongButton
+
+        # ---------- ปุ่มเพลง 5 ปุ่ม ----------
+        song_center_x = 350     # <---- ขยับซ้าย/ขวา
+        first_y = 210           # <---- ขยับขึ้น/ลง
+        gap_y = 120             # <---- ระยะห่างระหว่างปุ่ม
+
+        # DO CHANGE EVERYTIME
+        run.song_name = ("BIRDS OF A FEATHER.", "Shinunoga E-Wa.", "APT.", "Tokyo Drift.", "NewJeans.")
+
+        run.song_buttons = [
+            SongButton(run.song_name[0], 1, (song_center_x, first_y + 0 * gap_y)),
+            SongButton(run.song_name[1], 2, (song_center_x, first_y + 1 * gap_y)),
+            SongButton(run.song_name[2], 2, (song_center_x, first_y + 2 * gap_y)),
+            SongButton(run.song_name[3], 3, (song_center_x, first_y + 3 * gap_y)),
+            SongButton(run.song_name[4], 3, (song_center_x, first_y + 4 * gap_y)),
+        ]
+
+        # ---------- ปุ่ม PLAY / HOME ด้านขวาล่าง ----------
+        run.play_button = ui.Button("PLAY", (925, 600), size=(260, 70), radius=35)
+        run.home_button = ui.Button("HOME", (925, 700), size=(260, 70), radius=35)
+
+        run.active_song_index = 0  # default
+
+        # สีกล่อง leaderboard
+        run.LB_BOX_COLOR = (250, 248, 220)
+
+    mouse = pygame.mouse.get_pos()
+
+    # -------- Update 1 ----------
+    hover_index = None
+    for i, b in enumerate(run.song_buttons):
+        b.update(mouse, dt)
+        if b.rect().collidepoint(mouse):
+            hover_index = i
+
+    if hover_index is not None:
+        run.active_song_index = hover_index
+        run.SongButton.song_index = hover_index
+
+    # ---------- Event ----------
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            return "quit"
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if run.play_button.was_clicked(event):
+                # print(run.SongButton.song_index + 1)
+                return run.song_name[run.SongButton.song_index]
+            if run.home_button.was_clicked(event):
+                return "start"
+
+    # --------- Update 2 ----------
+    run.play_button.update(mouse, dt)
+    run.home_button.update(mouse, dt)
+
+    # ---------- Draw ----------
+    screen.fill(ui.BG_COLOR)
+    __draw_background_image(screen)
+
+    # หัวข้อ Songs
+    songs_title = run.FONT_TITLE_SMALL.render("Songs", True, ui.WHITE)
+    screen.blit(songs_title, (90, 60))
+
+    # หัวข้อ Leaderboard
+    lb_title = run.FONT_TITLE_SMALL.render("Leaderboard", True, ui.WHITE)
+    # ตำแหน่ง
+    screen.blit(lb_title, (720, 100))
+
+    # ปุ่มเพลงฝั่งซ้าย
+    for b in run.song_buttons:
+        b.draw(screen)
+
+    # Leaderboard ของเพลงที่ active อยู่
+    # lb_set = run.leaderboards[run.active_song_index]
+    lb_set = [(str(name), str(score)) for name, score in run.leaderboard_data[run.active_song_index]["leaderboard"].items()]
+
+
+    base_y = 210
+    gap_y = 110
+    box_w, box_h = 320, 75
+    box_x = 760
+
+    for rank, (name, score) in enumerate(lb_set, start=1):
+        y = base_y + (rank - 1) * gap_y
+        rect = pygame.Rect(box_x, y, box_w, box_h)
+        # เลือกสีขอบตามอันดับ
+        if rank == 1:
+            border_color = (255, 215, 0)       # ทอง
+        elif rank == 2:
+            border_color = (200, 200, 200)     # เงิน
+        elif rank == 3:
+            border_color = (205, 127, 50)      # ทองแดง
+        else:
+            border_color = (0, 0, 0)           # สำรอง (กรณีมีอันดับอื่น)
+
+        # วาดพื้นกล่อง
+        pygame.draw.rect(screen, run.LB_BOX_COLOR, rect, border_radius=35)
+
+        # วาดขอบ (stroke)
+        pygame.draw.rect(screen, border_color, rect, width=4, border_radius=35)
+
+        # อันดับ
+        rank_text = run.FONT_LABEL.render(str(rank), True, ui.BTN_TEXT)
+        screen.blit(rank_text, (rect.x + 25, rect.centery - rank_text.get_height() // 2))
+
+        # ชื่อ & score
+        name_text = run.player.render(name, True, ui.BTN_TEXT)
+        screen.blit(name_text, (rect.x + 85, rect.y + 10))
+
+        score_text = run.player.render(score, True, ui.BTN_TEXT)
+        surface_y = rect.y + 10 + name_text.get_height() + 4
+        screen.blit(score_text, (rect.x + 85, surface_y))
+
+    # ปุ่ม PLAY / HOME
+    run.play_button.draw(screen)
+    run.home_button.draw(screen)
+
+    pygame.display.flip()
+    return None
+
+
+class SongButton(ui.Button):
+    def __init__(self, name, stars, center):
+        # กล่องยาวฝั่งซ้าย
+        super().__init__("", center, size=(520, 90), radius=35)
+        self.song_name = name
+        self.stars = stars  # 1–3 ดาว
+
+        self.song_index = 0
+        self.song_json_dir = f"/song0{self.song_index + 1}.json"
+
+    def draw(self, surface):
+        # วาดกล่องหลัก + เงา + animation
+        super().draw(surface)
+        r = self.rect()
+
+        # แถบสีเทาด้านซ้าย (เหมือนช่องใน mockup)
+        thumb_w = int(r.width * 0.22)
+        thumb_rect = pygame.Rect(r.x, r.y, thumb_w, r.height)
+        pygame.draw.rect(surface, (230, 230, 230),
+                         thumb_rect, border_radius=int(self.radius * self.scale))
+
+        # ชื่อเพลง (วางด้านขวาของแถบเทา)
+        name_x = r.x + thumb_w + 24
+        name_y = r.y + 15
+        name_surf = run.FONT_LABEL.render(self.song_name, True, ui.BTN_TEXT)
+        surface.blit(name_surf, (name_x, name_y))
+
+        # แสดง Level
+        level_text = f"Lv.{self.stars}"
+        lvl_surf = run.FONT_LABEL.render(level_text, True, (0, 0, 0))
+        surface.blit(lvl_surf, (name_x, name_y + name_surf.get_height() + 6))
+
