@@ -1,17 +1,31 @@
-import pygame
+import pygame, sys
+import Start
+import Setting
 
-from config.song_dir import *
-# from game.GamePage import GamePage
-from game.GamePage2 import GamePage
-# from game.Game_Gemini import GamePage
-# from home.HomePage import HomePage
-from credits.CreditsPage import CreditsPage
+pygame.init()
+WIDTH, HEIGHT = 1324, 768
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("YeaYea RHYTHM")
 
-class GameInstance:
-    def __init__(self):
-        pygame.init()
-        self.instance = GamePage(SONG01_JSON_DIR)
-        self.instance.run()
+clock = pygame.time.Clock()
+current_scene = "start"   # เริ่มต้นที่หน้า start
 
-if __name__ == "__main__":
-    gameInstance = GameInstance()
+# -------- Main loop --------
+while True:
+    dt = clock.tick(60) / 1000.0
+
+    if current_scene == "start":
+        next_scene = Start.run(screen, dt)
+        if next_scene:
+            current_scene = next_scene
+
+    elif current_scene == "setting":
+        next_scene = Setting.run(screen, dt)
+        if next_scene:
+            current_scene = next_scene
+
+    # ปิดเกม
+    if current_scene == "quit":
+        pygame.quit()
+        sys.exit()
+

@@ -48,11 +48,12 @@ def __draw_background_image(screen):
 def run(screen, dt):
     ui.init_fonts()
 
+    run.leaderboard_data = load_data(SCORE_DIR)
+
     if not hasattr(run, "_inited"):
         run._inited = True
 
         run.leaderboard_data = load_data(SCORE_DIR)
-        print(run.leaderboard_data)
 
         # ---------- ฟอนต์เฉพาะหน้าเลือกเพลง ----------
         run.FONT_TITLE_SMALL = pygame.font.Font(ui.FONT_PATH, 60)
@@ -72,7 +73,7 @@ def run(screen, dt):
 
         run.song_buttons = [
             SongButton(run.song_name[0], 1, (song_center_x, first_y + 0 * gap_y)),
-            SongButton(run.song_name[1], 1, (song_center_x, first_y + 1 * gap_y)),
+            SongButton(run.song_name[1], 2, (song_center_x, first_y + 1 * gap_y)),
             SongButton(run.song_name[2], 2, (song_center_x, first_y + 2 * gap_y)),
             SongButton(run.song_name[3], 3, (song_center_x, first_y + 3 * gap_y)),
             SongButton(run.song_name[4], 3, (song_center_x, first_y + 4 * gap_y)),
